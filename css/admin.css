@@ -712,3 +712,51 @@
   }
 
 }
+
+
+/* =========================================
+   REVENUE DASHBOARD
+========================================= */
+
+.revenue-welcome {
+  margin-bottom: 25px;
+}
+
+.settlement-account {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.settlement-account div {
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.settlement-account small {
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.settlement-account strong {
+  font-size: 16px;
+}
+
+.security-note {
+  margin-top: 18px;
+  color: #888;
+  font-size: 12px;
+}
+
+.revenue-table-panel {
+  margin-top: 25px;
+}
+
+@media (max-width: 700px) {
+  .settlement-account {
+    grid-template-columns: 1fr;
+  }
+}

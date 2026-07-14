@@ -213,6 +213,98 @@
 
     </section>
 
+    <section id="revenueSection" class="admin-section">
+
+      <div class="admin-welcome revenue-welcome">
+        <div>
+          <span>PENDAPATAN TOKOPELUANG</span>
+          <h2>Dashboard Keuangan</h2>
+          <p>
+            Pantau transaksi, pendapatan platform, dan status settlement.
+          </p>
+        </div>
+      </div>
+
+      <div class="admin-stats">
+        <div class="stat-card">
+          <span>Total Transaksi Dibayar</span>
+          <strong id="revenuePaidCount">0</strong>
+          <small>Transaksi berhasil</small>
+        </div>
+
+        <div class="stat-card">
+          <span>Nilai Transaksi</span>
+          <strong id="revenueGross">Rp0</strong>
+          <small>Total pembayaran berhasil</small>
+        </div>
+
+        <div class="stat-card">
+          <span>Pendapatan Platform</span>
+          <strong id="revenuePlatform">Rp0</strong>
+          <small>Keuntungan TokoPeluang</small>
+        </div>
+
+        <div class="stat-card">
+          <span>Sudah Settlement</span>
+          <strong id="revenueSettled">Rp0</strong>
+          <small>Dana yang sudah diselesaikan</small>
+        </div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="panel-heading">
+          <div>
+            <span>REKENING SETTLEMENT</span>
+            <h2>Tujuan Pencairan Dana</h2>
+          </div>
+        </div>
+
+        <div class="settlement-account">
+          <div>
+            <small>Bank</small>
+            <strong>Bank Mandiri</strong>
+          </div>
+          <div>
+            <small>Pemilik</small>
+            <strong>Alma</strong>
+          </div>
+          <div>
+            <small>Nomor Rekening</small>
+            <strong>********8281</strong>
+          </div>
+        </div>
+
+        <p class="security-note">
+          Nomor rekening lengkap tidak disimpan di source code publik.
+          Settlement otomatis akan dikonfigurasi melalui payment gateway.
+        </p>
+      </div>
+
+      <div class="admin-panel revenue-table-panel">
+        <div class="panel-heading">
+          <div>
+            <span>RIWAYAT</span>
+            <h2>Transaksi Terbaru</h2>
+          </div>
+
+          <button
+            type="button"
+            id="refreshRevenueBtn"
+            class="btn admin-secondary-btn"
+          >
+            Refresh
+          </button>
+        </div>
+
+        <div id="revenueTable">
+          <div class="empty-state">
+            Memuat transaksi...
+          </div>
+        </div>
+      </div>
+
+    </section>
+
     <section id="addSection" class="admin-section">
 
       <div class="admin-panel form-panel">

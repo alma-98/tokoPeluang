@@ -245,6 +245,11 @@ const sections = {
   partners:
     document.getElementById(
       "partnersSection"
+    ),
+
+  revenue:
+    document.getElementById(
+      "revenueSection"
     )
 };
 
@@ -294,7 +299,8 @@ async function showSection(sectionName) {
     dashboard: "Dashboard",
     opportunities: "Kelola Peluang",
     add: "Tambah Peluang",
-    partners: "Pendaftaran Mitra"
+    partners: "Pendaftaran Mitra",
+    revenue: "Pendapatan"
   };
 
   pageTitle.textContent =
@@ -305,9 +311,11 @@ async function showSection(sectionName) {
     .classList.remove("mobile-open");
 
   if (sectionName === "partners") {
-
     await renderPartnerTable();
+  }
 
+  if (sectionName === "revenue") {
+    await renderRevenueDashboard();
   }
 
 }
@@ -1389,6 +1397,219 @@ document
     "change",
     renderPartnerTable
   );
+
+
+
+
+/* =========================================
+   REVENUE & TRANSACTIONS
+========================================= */
+
+function formatRupiah(value) {
+  return new Intl.NumberFormat(
+    "id-ID",
+    {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0
+    }
+  ).format(Number(value || 0));
+}
+
+async function renderRevenueDashboard() {
+
+  const revenueTable =
+    document.getElementById("revenueTable");
+
+  if (!revenueTable) return;
+
+  revenueTable.innerHTML = `
+    <div class="empty-state">
+      Memuat transaksi...
+    </div>
+  `;
+
+  const {
+    data,
+    error
+  } =
+    await adminSupabase
+      .from("transactions")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+  if (error) {
+
+    console.error(
+      "Gagal memuat transaksi:",
+      error
+    );
+
+    revenueTable.innerHTML = `
+      <div class="empty-state">
+        <strong>Data transaksi belum tersedia.</strong>
+        Jalankan file SQL monetisasi di Supabase terlebih dahulu.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  const transactions =
+    data || [];
+
+  const paid =
+    transactions.filter(
+      item =>
+        item.payment_status === "paid"
+    );
+
+  const gross =
+    paid.reduce(
+      (total, item) =>
+        total +
+        Number(item.gross_amount || 0),
+      0
+    );
+
+  const platform =
+    paid.reduce(
+      (total, item) =>
+        total +
+        Number(item.platform_fee || 0),
+      0
+    );
+
+  const settled =
+    paid
+      .filter(
+        item =>
+          item.settlement_status ===
+          "settled"
+      )
+      .reduce(
+        (total, item) =>
+          total +
+          Number(item.platform_fee || 0),
+        0
+      );
+
+  document.getElementById(
+    "revenuePaidCount"
+  ).textContent =
+    paid.length;
+
+  document.getElementById(
+    "revenueGross"
+  ).textContent =
+    formatRupiah(gross);
+
+  document.getElementById(
+    "revenuePlatform"
+  ).textContent =
+    formatRupiah(platform);
+
+  document.getElementById(
+    "revenueSettled"
+  ).textContent =
+    formatRupiah(settled);
+
+  if (!transactions.length) {
+
+    revenueTable.innerHTML = `
+      <div class="empty-state">
+        <strong>Belum ada transaksi.</strong>
+        Transaksi akan muncul setelah integrasi payment gateway.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  revenueTable.innerHTML = `
+    <div class="admin-table-wrapper">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Pelanggan</th>
+            <th>Transaksi</th>
+            <th>Pendapatan</th>
+            <th>Pembayaran</th>
+            <th>Settlement</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${transactions.map(item => `
+            <tr>
+              <td>
+                <strong>
+                  ${escapeHTML(
+                    item.transaction_code
+                  )}
+                </strong>
+              </td>
+
+              <td>
+                ${escapeHTML(
+                  item.customer_name
+                )}
+              </td>
+
+              <td>
+                ${formatRupiah(
+                  item.gross_amount
+                )}
+              </td>
+
+              <td>
+                ${formatRupiah(
+                  item.platform_fee
+                )}
+              </td>
+
+              <td>
+                <span class="status-badge">
+                  ${escapeHTML(
+                    item.payment_status
+                  ).toUpperCase()}
+                </span>
+              </td>
+
+              <td>
+                <span class="status-badge">
+                  ${escapeHTML(
+                    item.settlement_status
+                  ).toUpperCase()}
+                </span>
+              </td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+const refreshRevenueBtn =
+  document.getElementById(
+    "refreshRevenueBtn"
+  );
+
+if (refreshRevenueBtn) {
+  refreshRevenueBtn.addEventListener(
+    "click",
+    renderRevenueDashboard
+  );
+}
 
 
 /* =========================================

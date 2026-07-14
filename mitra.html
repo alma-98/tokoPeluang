@@ -168,43 +168,100 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/app.js"></script>
 
 <script>
-const PARTNER_STORAGE_KEY = "tokopeluang_partners";
+const supabaseConfig = window.TOKOPELUANG_SUPABASE;
 
-document.getElementById("partnerForm").addEventListener("submit", function(event) {
+const tokoPeluangSupabase = window.supabase.createClient(
+  supabaseConfig.url,
+  supabaseConfig.key
+);
+
+const partnerForm = document.getElementById("partnerForm");
+const partnerSubmitButton = partnerForm.querySelector(
+  'button[type="submit"]'
+);
+
+partnerForm.addEventListener("submit", async function(event) {
   event.preventDefault();
 
-  const partner = {
-    id: Date.now(),
-    name: document.getElementById("partnerName").value.trim(),
-    businessName: document.getElementById("businessName").value.trim(),
-    phone: document.getElementById("partnerPhone").value.trim(),
-    email: document.getElementById("partnerEmail").value.trim(),
-    category: document.getElementById("businessCategory").value,
-    serviceArea: document.getElementById("serviceArea").value.trim(),
-    service: document.getElementById("partnerService").value.trim(),
-    status: "pending",
-    createdAt: new Date().toISOString()
+  const originalButtonText =
+    partnerSubmitButton.textContent;
+
+  partnerSubmitButton.disabled = true;
+  partnerSubmitButton.textContent =
+    "Mengirim Pendaftaran...";
+
+  const partnerData = {
+    name:
+      document.getElementById("partnerName")
+        .value.trim(),
+
+    business_name:
+      document.getElementById("businessName")
+        .value.trim(),
+
+    phone:
+      document.getElementById("partnerPhone")
+        .value.trim(),
+
+    email:
+      document.getElementById("partnerEmail")
+        .value.trim(),
+
+    category:
+      document.getElementById("businessCategory")
+        .value,
+
+    service_area:
+      document.getElementById("serviceArea")
+        .value.trim(),
+
+    service:
+      document.getElementById("partnerService")
+        .value.trim(),
+
+    status: "pending"
   };
 
-  const partners = JSON.parse(
-    localStorage.getItem(PARTNER_STORAGE_KEY) || "[]"
-  );
+  try {
 
-  partners.unshift(partner);
+    const { error } =
+      await tokoPeluangSupabase
+        .from("partners")
+        .insert([partnerData]);
 
-  localStorage.setItem(
-    PARTNER_STORAGE_KEY,
-    JSON.stringify(partners)
-  );
+    if (error) {
+      throw error;
+    }
 
-  document.getElementById("partnerForm").reset();
+    partnerForm.reset();
 
-  alert(
-    "Pendaftaran berhasil dikirim! Data Anda telah masuk ke Dashboard Admin TokoPeluang."
-  );
+    alert(
+      "Pendaftaran berhasil! Data Anda telah diterima oleh TokoPeluang dan sedang menunggu verifikasi."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Pendaftaran mitra gagal:",
+      error
+    );
+
+    alert(
+      "Pendaftaran belum berhasil. Silakan coba kembali atau hubungi TokoPeluang."
+    );
+
+  } finally {
+
+    partnerSubmitButton.disabled = false;
+    partnerSubmitButton.textContent =
+      originalButtonText;
+
+  }
 });
 </script>
 

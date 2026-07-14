@@ -791,3 +791,11 @@ footer {
     font-size: 34px;
   }
 }
+
+/* Supabase form status */
+
+.form-submit:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+}

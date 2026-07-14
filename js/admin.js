@@ -15,103 +15,39 @@ const ADMIN_EMAIL =
 
 
 /* =========================================
-   DEFAULT OPPORTUNITIES
+   SUPABASE OPPORTUNITIES
 ========================================= */
 
-const defaultOpportunities = [
-  {
-    id: 1,
-    title: "Pembuatan Website Bisnis",
-    category: "IT & Software",
-    location: "Indonesia",
-    budget: "Menyesuaikan",
-    status: "active",
-    description:
-      "Mencari developer atau mitra untuk pengembangan website bisnis dan perusahaan.",
-    requirements:
-      "Memiliki portofolio\nMampu mengembangkan website responsive\nMemberikan penawaran harga",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 2,
-    title: "Vendor Instalasi CCTV",
-    category: "CCTV & Security",
-    location: "Jawa Barat",
-    budget: "Menyesuaikan proyek",
-    status: "active",
-    description:
-      "Peluang kerja sama untuk vendor CCTV, jaringan, dan sistem keamanan.",
-    requirements:
-      "Pengadaan perangkat CCTV\nInstalasi dan konfigurasi\nMaintenance dan dukungan teknis",
-    createdAt: new Date().toISOString()
-  },
-  {
-    id: 3,
-    title: "Kendaraan Operasional Perusahaan",
-    category: "Otomotif",
-    location: "Jabodetabek",
-    budget: "Sesuai kebutuhan unit",
-    status: "active",
-    description:
-      "Solusi kebutuhan kendaraan operasional untuk perusahaan dan pemilik usaha.",
-    requirements:
-      "Perusahaan atau pemilik usaha\nMemiliki kebutuhan kendaraan operasional",
-    createdAt: new Date().toISOString()
-  }
-];
+let onlineOpportunities = [];
 
+async function loadOpportunities() {
 
-/* =========================================
-   HELPERS
-========================================= */
+  const {
+    data,
+    error
+  } =
+    await adminSupabase
+      .from("opportunities")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
 
-function escapeHTML(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-
-/* =========================================
-   OPPORTUNITIES LOCAL STORAGE
-========================================= */
-
-function getOpportunities() {
-
-  const saved =
-    localStorage.getItem(
-      OPPORTUNITY_STORAGE_KEY
+  if (error) {
+    console.error(
+      "Gagal memuat peluang:",
+      error
     );
-
-  if (!saved) {
-
-    localStorage.setItem(
-      OPPORTUNITY_STORAGE_KEY,
-      JSON.stringify(defaultOpportunities)
-    );
-
-    return defaultOpportunities;
-
+    throw error;
   }
 
-  try {
-    return JSON.parse(saved);
-  } catch {
-    return defaultOpportunities;
-  }
+  onlineOpportunities =
+    data || [];
 
-}
-
-function saveOpportunities(data) {
-
-  localStorage.setItem(
-    OPPORTUNITY_STORAGE_KEY,
-    JSON.stringify(data)
-  );
-
+  return onlineOpportunities;
 }
 
 
@@ -534,12 +470,9 @@ if (goOpportunitiesButton) {
 
 opportunityForm.addEventListener(
   "submit",
-  function(event) {
+  async function(event) {
 
     event.preventDefault();
-
-    let opportunities =
-      getOpportunities();
 
     const data = {
 
@@ -563,65 +496,76 @@ opportunityForm.addEventListener(
         adminDescription.value.trim(),
 
       requirements:
-        adminRequirements.value.trim()
+        adminRequirements.value.trim(),
+
+      updated_at:
+        new Date().toISOString()
 
     };
 
-    if (editOpportunityId.value) {
+    try {
 
-      const id =
-        Number(
-          editOpportunityId.value
+      if (editOpportunityId.value) {
+
+        const id =
+          Number(
+            editOpportunityId.value
+          );
+
+        const {
+          error
+        } =
+          await adminSupabase
+            .from("opportunities")
+            .update(data)
+            .eq("id", id);
+
+        if (error) {
+          throw error;
+        }
+
+        alert(
+          "Peluang berhasil diperbarui."
         );
 
-      opportunities =
-        opportunities.map(item => {
+      } else {
 
-          if (item.id === id) {
+        delete data.updated_at;
 
-            return {
-              ...item,
-              ...data,
-              updatedAt:
-                new Date().toISOString()
-            };
+        const {
+          error
+        } =
+          await adminSupabase
+            .from("opportunities")
+            .insert([data]);
 
-          }
+        if (error) {
+          throw error;
+        }
 
-          return item;
+        alert(
+          "Peluang baru berhasil ditambahkan."
+        );
 
-        });
+      }
 
-      alert(
-        "Peluang berhasil diperbarui."
+      resetForm();
+
+      await renderAll();
+
+      await showSection(
+        "opportunities"
       );
 
-    } else {
+    } catch (error) {
 
-      opportunities.unshift({
-
-        id: Date.now(),
-
-        ...data,
-
-        createdAt:
-          new Date().toISOString()
-
-      });
+      console.error(error);
 
       alert(
-        "Peluang baru berhasil ditambahkan."
+        "Gagal menyimpan peluang. Periksa koneksi dan policy Supabase."
       );
 
     }
-
-    saveOpportunities(
-      opportunities
-    );
-
-    resetForm();
-    renderAll();
-    showSection("opportunities");
 
   }
 );
@@ -642,11 +586,10 @@ window.editOpportunity =
   function(id) {
 
     const item =
-      getOpportunities()
-        .find(
-          opportunity =>
-            opportunity.id === id
-        );
+      onlineOpportunities.find(
+        opportunity =>
+          opportunity.id === id
+      );
 
     if (!item) return;
 
@@ -663,7 +606,7 @@ window.editOpportunity =
       item.location;
 
     adminBudget.value =
-      item.budget;
+      item.budget || "";
 
     adminStatus.value =
       item.status;
@@ -690,7 +633,7 @@ window.editOpportunity =
 
 
 window.deleteOpportunity =
-  function(id) {
+  async function(id) {
 
     if (
       !confirm(
@@ -698,53 +641,72 @@ window.deleteOpportunity =
       )
     ) return;
 
-    const opportunities =
-      getOpportunities()
-        .filter(
-          item =>
-            item.id !== id
-        );
+    const {
+      error
+    } =
+      await adminSupabase
+        .from("opportunities")
+        .delete()
+        .eq("id", id);
 
-    saveOpportunities(
-      opportunities
-    );
+    if (error) {
 
-    renderAll();
+      console.error(error);
+
+      alert(
+        "Gagal menghapus peluang."
+      );
+
+      return;
+
+    }
+
+    await renderAll();
 
   };
 
 
 window.toggleOpportunity =
-  function(id) {
+  async function(id) {
 
-    const opportunities =
-      getOpportunities()
-        .map(item => {
+    const item =
+      onlineOpportunities.find(
+        opportunity =>
+          opportunity.id === id
+      );
 
-          if (item.id === id) {
+    if (!item) return;
 
-            return {
+    const newStatus =
+      item.status === "active"
+        ? "closed"
+        : "active";
 
-              ...item,
+    const {
+      error
+    } =
+      await adminSupabase
+        .from("opportunities")
+        .update({
+          status: newStatus,
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq("id", id);
 
-              status:
-                item.status === "active"
-                  ? "closed"
-                  : "active"
+    if (error) {
 
-            };
+      console.error(error);
 
-          }
+      alert(
+        "Gagal mengubah status peluang."
+      );
 
-          return item;
+      return;
 
-        });
+    }
 
-    saveOpportunities(
-      opportunities
-    );
-
-    renderAll();
+    await renderAll();
 
   };
 
@@ -875,7 +837,7 @@ function createOpportunityTable(data) {
 function renderDashboard() {
 
   const opportunities =
-    getOpportunities();
+    onlineOpportunities;
 
   const active =
     opportunities.filter(
@@ -948,7 +910,7 @@ function renderOpportunityTable() {
     adminStatusFilter.value;
 
   const opportunities =
-    getOpportunities()
+    onlineOpportunities
       .filter(item => {
 
         const searchable = `
@@ -1433,7 +1395,9 @@ document
    RENDER
 ========================================= */
 
-function renderAll() {
+async function renderAll() {
+
+  await loadOpportunities();
 
   renderDashboard();
   renderOpportunityTable();

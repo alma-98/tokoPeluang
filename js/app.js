@@ -1,40 +1,133 @@
-const menuBtn = document.getElementById("menuBtn");
-const navMenu = document.getElementById("navMenu");
-const searchInput = document.getElementById("searchInput");
-const categoryFilter = document.getElementById("categoryFilter");
-const cards = document.querySelectorAll(".opportunity-card");
+const menuBtn =
+  document.getElementById("menuBtn");
 
-menuBtn.addEventListener("click", () => {
-  navMenu.classList.toggle("active");
-});
+const navMenu =
+  document.getElementById("navMenu");
 
-document.querySelectorAll("#navMenu a").forEach(link => {
-  link.addEventListener("click", () => {
-    navMenu.classList.remove("active");
+if (menuBtn && navMenu) {
+
+  menuBtn.addEventListener(
+    "click",
+    () => {
+
+      navMenu.classList.toggle(
+        "active"
+      );
+
+    }
+  );
+
+}
+
+
+document
+  .querySelectorAll("#navMenu a")
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        if (navMenu) {
+
+          navMenu.classList.remove(
+            "active"
+          );
+
+        }
+
+      }
+    );
+
   });
-});
+
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+const categoryFilter =
+  document.getElementById(
+    "categoryFilter"
+  );
+
 
 function filterOpportunities() {
-  const keyword = searchInput.value.toLowerCase();
-  const category = categoryFilter.value;
+
+  const cards =
+    document.querySelectorAll(
+      ".opportunity-card"
+    );
+
+  const keyword =
+    searchInput
+      ? searchInput.value
+          .toLowerCase()
+          .trim()
+      : "";
+
+  const category =
+    categoryFilter
+      ? categoryFilter.value
+      : "all";
 
   cards.forEach(card => {
-    const text = card.innerText.toLowerCase();
-    const cardCategory = card.dataset.category;
 
-    const matchesSearch = text.includes(keyword);
+    const text =
+      card.innerText.toLowerCase();
+
+    const cardCategory =
+      card.dataset.category || "";
+
+    const matchesSearch =
+      text.includes(keyword);
+
     const matchesCategory =
-      category === "all" || cardCategory === category;
+      category === "all" ||
+      cardCategory.includes(
+        category.toLowerCase()
+      );
 
     card.classList.toggle(
       "hidden",
-      !(matchesSearch && matchesCategory)
+      !(
+        matchesSearch &&
+        matchesCategory
+      )
     );
+
   });
+
 }
 
-searchInput.addEventListener("input", filterOpportunities);
-categoryFilter.addEventListener("change", filterOpportunities);
 
-document.getElementById("year").textContent =
-  new Date().getFullYear();
+if (searchInput) {
+
+  searchInput.addEventListener(
+    "input",
+    filterOpportunities
+  );
+
+}
+
+
+if (categoryFilter) {
+
+  categoryFilter.addEventListener(
+    "change",
+    filterOpportunities
+  );
+
+}
+
+
+const yearElement =
+  document.getElementById("year");
+
+if (yearElement) {
+
+  yearElement.textContent =
+    new Date().getFullYear();
+
+}

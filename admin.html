@@ -18,26 +18,44 @@
     <p>Masukkan PIN demo untuk membuka dashboard.</p>
 
     <form id="loginForm">
+
       <div class="form-group">
-        <label>PIN Admin</label>
+        <label>Email Admin</label>
         <input
-          type="password"
-          id="adminPin"
-          maxlength="6"
-          inputmode="numeric"
-          placeholder="Masukkan PIN"
+          type="email"
+          id="adminEmail"
+          placeholder="Email admin"
+          autocomplete="email"
           required
         >
       </div>
 
-      <button type="submit" class="btn btn-primary admin-full-btn">
+      <div class="form-group">
+        <label>Password</label>
+        <input
+          type="password"
+          id="adminPassword"
+          placeholder="Password Supabase"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button
+        type="submit"
+        id="adminLoginButton"
+        class="btn btn-primary admin-full-btn"
+      >
         Masuk Dashboard
       </button>
 
       <p id="loginError" class="login-error"></p>
+
     </form>
 
-    <p class="demo-pin">Demo PIN: 1234</p>
+    <p class="demo-pin">
+      Login menggunakan akun Admin TokoPeluang.
+    </p>
   </div>
 </div>
 
@@ -313,6 +331,8 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

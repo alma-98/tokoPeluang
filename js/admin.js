@@ -1,6 +1,22 @@
-const STORAGE_KEY = "tokopeluang_opportunities";
-const SESSION_KEY = "tokopeluang_admin_session";
-const ADMIN_PIN = "1234";
+const OPPORTUNITY_STORAGE_KEY =
+  "tokopeluang_opportunities";
+
+const supabaseConfig =
+  window.TOKOPELUANG_SUPABASE;
+
+const adminSupabase =
+  window.supabase.createClient(
+    supabaseConfig.url,
+    supabaseConfig.key
+  );
+
+const ADMIN_EMAIL =
+  "alma.budsteddy88@gmail.com";
+
+
+/* =========================================
+   DEFAULT OPPORTUNITIES
+========================================= */
 
 const defaultOpportunities = [
   {
@@ -10,8 +26,10 @@ const defaultOpportunities = [
     location: "Indonesia",
     budget: "Menyesuaikan",
     status: "active",
-    description: "Mencari developer atau mitra untuk pengembangan website bisnis dan perusahaan.",
-    requirements: "Memiliki portofolio\nMampu mengembangkan website responsive\nMemberikan penawaran harga",
+    description:
+      "Mencari developer atau mitra untuk pengembangan website bisnis dan perusahaan.",
+    requirements:
+      "Memiliki portofolio\nMampu mengembangkan website responsive\nMemberikan penawaran harga",
     createdAt: new Date().toISOString()
   },
   {
@@ -21,8 +39,10 @@ const defaultOpportunities = [
     location: "Jawa Barat",
     budget: "Menyesuaikan proyek",
     status: "active",
-    description: "Peluang kerja sama untuk vendor CCTV, jaringan, dan sistem keamanan.",
-    requirements: "Pengadaan perangkat CCTV\nInstalasi dan konfigurasi\nMaintenance dan dukungan teknis",
+    description:
+      "Peluang kerja sama untuk vendor CCTV, jaringan, dan sistem keamanan.",
+    requirements:
+      "Pengadaan perangkat CCTV\nInstalasi dan konfigurasi\nMaintenance dan dukungan teknis",
     createdAt: new Date().toISOString()
   },
   {
@@ -32,102 +52,306 @@ const defaultOpportunities = [
     location: "Jabodetabek",
     budget: "Sesuai kebutuhan unit",
     status: "active",
-    description: "Solusi kebutuhan kendaraan operasional untuk perusahaan dan pemilik usaha.",
-    requirements: "Perusahaan atau pemilik usaha\nMemiliki kebutuhan kendaraan operasional",
+    description:
+      "Solusi kebutuhan kendaraan operasional untuk perusahaan dan pemilik usaha.",
+    requirements:
+      "Perusahaan atau pemilik usaha\nMemiliki kebutuhan kendaraan operasional",
     createdAt: new Date().toISOString()
   }
 ];
 
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function escapeHTML(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+/* =========================================
+   OPPORTUNITIES LOCAL STORAGE
+========================================= */
+
 function getOpportunities() {
-  const saved = localStorage.getItem(STORAGE_KEY);
+
+  const saved =
+    localStorage.getItem(
+      OPPORTUNITY_STORAGE_KEY
+    );
 
   if (!saved) {
+
     localStorage.setItem(
-      STORAGE_KEY,
+      OPPORTUNITY_STORAGE_KEY,
       JSON.stringify(defaultOpportunities)
     );
 
     return defaultOpportunities;
+
   }
 
-  return JSON.parse(saved);
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return defaultOpportunities;
+  }
+
 }
 
 function saveOpportunities(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
 
-const adminLogin = document.getElementById("adminLogin");
-const adminApp = document.getElementById("adminApp");
-const loginForm = document.getElementById("loginForm");
-const adminPin = document.getElementById("adminPin");
-const loginError = document.getElementById("loginError");
-const logoutBtn = document.getElementById("logoutBtn");
-
-function showAdmin() {
-  adminLogin.classList.add("hidden");
-  adminApp.classList.remove("hidden");
-  renderAll();
-}
-
-function showLogin() {
-  adminLogin.classList.remove("hidden");
-  adminApp.classList.add("hidden");
-}
-
-if (sessionStorage.getItem(SESSION_KEY) === "active") {
-  showAdmin();
-} else {
-  showLogin();
-}
-
-loginForm.addEventListener("submit", function(event) {
-  event.preventDefault();
-
-  if (adminPin.value === ADMIN_PIN) {
-    sessionStorage.setItem(SESSION_KEY, "active");
-    loginError.textContent = "";
-    adminPin.value = "";
-    showAdmin();
-  } else {
-    loginError.textContent = "PIN admin tidak sesuai.";
-  }
-});
-
-logoutBtn.addEventListener("click", function() {
-  sessionStorage.removeItem(SESSION_KEY);
-  showLogin();
-});
-
-const navButtons = document.querySelectorAll(
-  ".admin-nav-item[data-section]"
-);
-
-const sections = {
-  dashboard: document.getElementById("dashboardSection"),
-  opportunities: document.getElementById("opportunitiesSection"),
-  add: document.getElementById("addSection")
-};
-
-const pageTitle = document.getElementById("pageTitle");
-
-function showSection(sectionName) {
-  Object.values(sections).forEach(section => {
-    section.classList.remove("active-section");
-  });
-
-  navButtons.forEach(button => {
-    button.classList.remove("active");
-  });
-
-  sections[sectionName].classList.add("active-section");
-
-  const activeButton = document.querySelector(
-    `[data-section="${sectionName}"]`
+  localStorage.setItem(
+    OPPORTUNITY_STORAGE_KEY,
+    JSON.stringify(data)
   );
 
+}
+
+
+/* =========================================
+   ADMIN AUTH
+========================================= */
+
+const adminLogin =
+  document.getElementById("adminLogin");
+
+const adminApp =
+  document.getElementById("adminApp");
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const adminEmail =
+  document.getElementById("adminEmail");
+
+const adminPassword =
+  document.getElementById("adminPassword");
+
+const adminLoginButton =
+  document.getElementById("adminLoginButton");
+
+const loginError =
+  document.getElementById("loginError");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
+
+function showLogin() {
+
+  adminLogin.classList.remove("hidden");
+  adminApp.classList.add("hidden");
+
+}
+
+
+async function showAdmin() {
+
+  adminLogin.classList.add("hidden");
+  adminApp.classList.remove("hidden");
+
+  renderAll();
+  await renderPartnerTable();
+
+}
+
+
+async function validateAdminSession() {
+
+  const {
+    data: { session }
+  } =
+    await adminSupabase.auth.getSession();
+
+  if (
+    session &&
+    session.user &&
+    session.user.email === ADMIN_EMAIL
+  ) {
+
+    await showAdmin();
+
+  } else {
+
+    if (session) {
+      await adminSupabase.auth.signOut();
+    }
+
+    showLogin();
+
+  }
+
+}
+
+
+loginForm.addEventListener(
+  "submit",
+  async function(event) {
+
+    event.preventDefault();
+
+    loginError.textContent = "";
+
+    adminLoginButton.disabled = true;
+    adminLoginButton.textContent =
+      "Memeriksa Login...";
+
+    try {
+
+      const email =
+        adminEmail.value
+          .trim()
+          .toLowerCase();
+
+      if (email !== ADMIN_EMAIL) {
+
+        throw new Error(
+          "Email ini tidak memiliki akses Admin."
+        );
+
+      }
+
+      const {
+        data,
+        error
+      } =
+        await adminSupabase.auth
+          .signInWithPassword({
+            email,
+            password:
+              adminPassword.value
+          });
+
+      if (error) {
+        throw error;
+      }
+
+      if (
+        !data.user ||
+        data.user.email !== ADMIN_EMAIL
+      ) {
+
+        await adminSupabase.auth.signOut();
+
+        throw new Error(
+          "Akun tidak memiliki akses Admin."
+        );
+
+      }
+
+      adminPassword.value = "";
+
+      await showAdmin();
+
+    } catch (error) {
+
+      console.error(error);
+
+      loginError.textContent =
+        error.message ||
+        "Login gagal. Periksa email dan password.";
+
+    } finally {
+
+      adminLoginButton.disabled = false;
+      adminLoginButton.textContent =
+        "Masuk Dashboard";
+
+    }
+
+  }
+);
+
+
+logoutBtn.addEventListener(
+  "click",
+  async function() {
+
+    await adminSupabase.auth.signOut();
+    showLogin();
+
+  }
+);
+
+
+/* =========================================
+   ADMIN NAVIGATION
+========================================= */
+
+const navButtons =
+  document.querySelectorAll(
+    ".admin-nav-item[data-section]"
+  );
+
+const sections = {
+  dashboard:
+    document.getElementById(
+      "dashboardSection"
+    ),
+
+  opportunities:
+    document.getElementById(
+      "opportunitiesSection"
+    ),
+
+  add:
+    document.getElementById(
+      "addSection"
+    ),
+
+  partners:
+    document.getElementById(
+      "partnersSection"
+    )
+};
+
+const pageTitle =
+  document.getElementById("pageTitle");
+
+
+async function showSection(sectionName) {
+
+  Object.values(sections)
+    .filter(Boolean)
+    .forEach(section => {
+
+      section.classList.remove(
+        "active-section"
+      );
+
+    });
+
+  navButtons.forEach(button => {
+
+    button.classList.remove("active");
+
+  });
+
+  if (sections[sectionName]) {
+
+    sections[sectionName]
+      .classList.add(
+        "active-section"
+      );
+
+  }
+
+  const activeButton =
+    document.querySelector(
+      `[data-section="${sectionName}"]`
+    );
+
   if (activeButton) {
+
     activeButton.classList.add("active");
+
   }
 
   const titles = {
@@ -137,209 +361,416 @@ function showSection(sectionName) {
     partners: "Pendaftaran Mitra"
   };
 
-  pageTitle.textContent = titles[sectionName];
+  pageTitle.textContent =
+    titles[sectionName] || "Dashboard";
 
   document
     .querySelector(".admin-sidebar")
     .classList.remove("mobile-open");
+
+  if (sectionName === "partners") {
+
+    await renderPartnerTable();
+
+  }
+
 }
 
+
 navButtons.forEach(button => {
-  button.addEventListener("click", function() {
-    showSection(this.dataset.section);
-  });
+
+  button.addEventListener(
+    "click",
+    function() {
+
+      showSection(
+        this.dataset.section
+      );
+
+    }
+  );
+
 });
 
-document.querySelectorAll(".go-add-btn").forEach(button => {
-  button.addEventListener("click", function() {
-    resetForm();
-    showSection("add");
-  });
-});
-
-document
-  .querySelector(".go-opportunities-btn")
-  .addEventListener("click", function() {
-    showSection("opportunities");
-  });
 
 document
   .getElementById("mobileSidebarBtn")
-  .addEventListener("click", function() {
-    document
-      .querySelector(".admin-sidebar")
-      .classList.toggle("mobile-open");
-  });
+  .addEventListener(
+    "click",
+    function() {
+
+      document
+        .querySelector(".admin-sidebar")
+        .classList.toggle(
+          "mobile-open"
+        );
+
+    }
+  );
+
+
+/* =========================================
+   OPPORTUNITY FORM
+========================================= */
 
 const opportunityForm =
-  document.getElementById("adminOpportunityForm");
+  document.getElementById(
+    "adminOpportunityForm"
+  );
 
 const editOpportunityId =
-  document.getElementById("editOpportunityId");
+  document.getElementById(
+    "editOpportunityId"
+  );
 
 const adminTitle =
   document.getElementById("adminTitle");
 
 const adminCategory =
-  document.getElementById("adminCategory");
+  document.getElementById(
+    "adminCategory"
+  );
 
 const adminLocation =
-  document.getElementById("adminLocation");
+  document.getElementById(
+    "adminLocation"
+  );
 
 const adminBudget =
-  document.getElementById("adminBudget");
+  document.getElementById(
+    "adminBudget"
+  );
 
 const adminStatus =
-  document.getElementById("adminStatus");
+  document.getElementById(
+    "adminStatus"
+  );
 
 const adminDescription =
-  document.getElementById("adminDescription");
+  document.getElementById(
+    "adminDescription"
+  );
 
 const adminRequirements =
-  document.getElementById("adminRequirements");
+  document.getElementById(
+    "adminRequirements"
+  );
 
 const cancelEditBtn =
-  document.getElementById("cancelEditBtn");
+  document.getElementById(
+    "cancelEditBtn"
+  );
 
 const formModeLabel =
-  document.getElementById("formModeLabel");
+  document.getElementById(
+    "formModeLabel"
+  );
 
 const formTitle =
-  document.getElementById("formTitle");
+  document.getElementById(
+    "formTitle"
+  );
 
-opportunityForm.addEventListener("submit", function(event) {
-  event.preventDefault();
-
-  let opportunities = getOpportunities();
-
-  const data = {
-    title: adminTitle.value.trim(),
-    category: adminCategory.value,
-    location: adminLocation.value.trim(),
-    budget: adminBudget.value.trim() || "Tidak disebutkan",
-    status: adminStatus.value,
-    description: adminDescription.value.trim(),
-    requirements: adminRequirements.value.trim()
-  };
-
-  if (editOpportunityId.value) {
-    const id = Number(editOpportunityId.value);
-
-    opportunities = opportunities.map(item => {
-      if (item.id === id) {
-        return {
-          ...item,
-          ...data,
-          updatedAt: new Date().toISOString()
-        };
-      }
-
-      return item;
-    });
-
-    alert("Peluang berhasil diperbarui.");
-  } else {
-    opportunities.unshift({
-      id: Date.now(),
-      ...data,
-      createdAt: new Date().toISOString()
-    });
-
-    alert("Peluang baru berhasil ditambahkan.");
-  }
-
-  saveOpportunities(opportunities);
-  resetForm();
-  renderAll();
-  showSection("opportunities");
-});
 
 function resetForm() {
+
   opportunityForm.reset();
+
   editOpportunityId.value = "";
+
   adminStatus.value = "active";
-  formModeLabel.textContent = "PELUANG BARU";
-  formTitle.textContent = "Tambah Peluang";
-  cancelEditBtn.classList.add("hidden");
+
+  formModeLabel.textContent =
+    "PELUANG BARU";
+
+  formTitle.textContent =
+    "Tambah Peluang";
+
+  cancelEditBtn.classList.add(
+    "hidden"
+  );
+
 }
 
-cancelEditBtn.addEventListener("click", function() {
-  resetForm();
-  showSection("opportunities");
-});
 
-window.editOpportunity = function(id) {
-  const opportunities = getOpportunities();
+document
+  .querySelectorAll(".go-add-btn")
+  .forEach(button => {
 
-  const item = opportunities.find(
-    opportunity => opportunity.id === id
-  );
+    button.addEventListener(
+      "click",
+      function() {
 
-  if (!item) return;
+        resetForm();
+        showSection("add");
 
-  editOpportunityId.value = item.id;
-  adminTitle.value = item.title;
-  adminCategory.value = item.category;
-  adminLocation.value = item.location;
-  adminBudget.value = item.budget;
-  adminStatus.value = item.status;
-  adminDescription.value = item.description;
-  adminRequirements.value = item.requirements || "";
+      }
+    );
 
-  formModeLabel.textContent = "EDIT DATA";
-  formTitle.textContent = "Edit Peluang";
-  cancelEditBtn.classList.remove("hidden");
-
-  showSection("add");
-};
-
-window.deleteOpportunity = function(id) {
-  const confirmed = confirm(
-    "Apakah Anda yakin ingin menghapus peluang ini?"
-  );
-
-  if (!confirmed) return;
-
-  const opportunities = getOpportunities().filter(
-    item => item.id !== id
-  );
-
-  saveOpportunities(opportunities);
-  renderAll();
-};
-
-window.toggleOpportunity = function(id) {
-  const opportunities = getOpportunities().map(item => {
-    if (item.id === id) {
-      return {
-        ...item,
-        status:
-          item.status === "active"
-            ? "closed"
-            : "active"
-      };
-    }
-
-    return item;
   });
 
-  saveOpportunities(opportunities);
-  renderAll();
-};
 
-function createTable(data) {
+const goOpportunitiesButton =
+  document.querySelector(
+    ".go-opportunities-btn"
+  );
+
+if (goOpportunitiesButton) {
+
+  goOpportunitiesButton
+    .addEventListener(
+      "click",
+      function() {
+
+        showSection(
+          "opportunities"
+        );
+
+      }
+    );
+
+}
+
+
+opportunityForm.addEventListener(
+  "submit",
+  function(event) {
+
+    event.preventDefault();
+
+    let opportunities =
+      getOpportunities();
+
+    const data = {
+
+      title:
+        adminTitle.value.trim(),
+
+      category:
+        adminCategory.value,
+
+      location:
+        adminLocation.value.trim(),
+
+      budget:
+        adminBudget.value.trim() ||
+        "Tidak disebutkan",
+
+      status:
+        adminStatus.value,
+
+      description:
+        adminDescription.value.trim(),
+
+      requirements:
+        adminRequirements.value.trim()
+
+    };
+
+    if (editOpportunityId.value) {
+
+      const id =
+        Number(
+          editOpportunityId.value
+        );
+
+      opportunities =
+        opportunities.map(item => {
+
+          if (item.id === id) {
+
+            return {
+              ...item,
+              ...data,
+              updatedAt:
+                new Date().toISOString()
+            };
+
+          }
+
+          return item;
+
+        });
+
+      alert(
+        "Peluang berhasil diperbarui."
+      );
+
+    } else {
+
+      opportunities.unshift({
+
+        id: Date.now(),
+
+        ...data,
+
+        createdAt:
+          new Date().toISOString()
+
+      });
+
+      alert(
+        "Peluang baru berhasil ditambahkan."
+      );
+
+    }
+
+    saveOpportunities(
+      opportunities
+    );
+
+    resetForm();
+    renderAll();
+    showSection("opportunities");
+
+  }
+);
+
+
+cancelEditBtn.addEventListener(
+  "click",
+  function() {
+
+    resetForm();
+    showSection("opportunities");
+
+  }
+);
+
+
+window.editOpportunity =
+  function(id) {
+
+    const item =
+      getOpportunities()
+        .find(
+          opportunity =>
+            opportunity.id === id
+        );
+
+    if (!item) return;
+
+    editOpportunityId.value =
+      item.id;
+
+    adminTitle.value =
+      item.title;
+
+    adminCategory.value =
+      item.category;
+
+    adminLocation.value =
+      item.location;
+
+    adminBudget.value =
+      item.budget;
+
+    adminStatus.value =
+      item.status;
+
+    adminDescription.value =
+      item.description;
+
+    adminRequirements.value =
+      item.requirements || "";
+
+    formModeLabel.textContent =
+      "EDIT DATA";
+
+    formTitle.textContent =
+      "Edit Peluang";
+
+    cancelEditBtn.classList.remove(
+      "hidden"
+    );
+
+    showSection("add");
+
+  };
+
+
+window.deleteOpportunity =
+  function(id) {
+
+    if (
+      !confirm(
+        "Hapus peluang ini?"
+      )
+    ) return;
+
+    const opportunities =
+      getOpportunities()
+        .filter(
+          item =>
+            item.id !== id
+        );
+
+    saveOpportunities(
+      opportunities
+    );
+
+    renderAll();
+
+  };
+
+
+window.toggleOpportunity =
+  function(id) {
+
+    const opportunities =
+      getOpportunities()
+        .map(item => {
+
+          if (item.id === id) {
+
+            return {
+
+              ...item,
+
+              status:
+                item.status === "active"
+                  ? "closed"
+                  : "active"
+
+            };
+
+          }
+
+          return item;
+
+        });
+
+    saveOpportunities(
+      opportunities
+    );
+
+    renderAll();
+
+  };
+
+
+/* =========================================
+   OPPORTUNITY TABLE
+========================================= */
+
+function createOpportunityTable(data) {
+
   if (!data.length) {
+
     return `
       <div class="empty-state">
         <strong>Belum ada data.</strong>
-        Tambahkan peluang baru dari Dashboard Admin.
+        Tambahkan peluang baru.
       </div>
     `;
+
   }
 
   return `
     <div class="admin-table-wrapper">
+
       <table class="admin-table">
+
         <thead>
           <tr>
             <th>Peluang</th>
@@ -351,33 +782,53 @@ function createTable(data) {
         </thead>
 
         <tbody>
+
           ${data.map(item => `
+
             <tr>
+
               <td class="table-title">
-                <strong>${escapeHTML(item.title)}</strong>
-                <small>${escapeHTML(item.budget)}</small>
+
+                <strong>
+                  ${escapeHTML(item.title)}
+                </strong>
+
+                <small>
+                  ${escapeHTML(item.budget)}
+                </small>
+
               </td>
 
-              <td>${escapeHTML(item.category)}</td>
-
-              <td>${escapeHTML(item.location)}</td>
+              <td>
+                ${escapeHTML(item.category)}
+              </td>
 
               <td>
+                ${escapeHTML(item.location)}
+              </td>
+
+              <td>
+
                 <span class="status-badge ${
                   item.status === "active"
                     ? "status-active"
                     : "status-closed"
                 }">
+
                   ${
                     item.status === "active"
                       ? "AKTIF"
                       : "DITUTUP"
                   }
+
                 </span>
+
               </td>
 
               <td>
+
                 <div class="table-actions">
+
                   <button
                     class="table-action-btn"
                     onclick="editOpportunity(${item.id})"
@@ -402,89 +853,137 @@ function createTable(data) {
                   >
                     Hapus
                   </button>
+
                 </div>
+
               </td>
+
             </tr>
+
           `).join("")}
+
         </tbody>
+
       </table>
+
     </div>
   `;
+
 }
 
+
 function renderDashboard() {
-  const opportunities = getOpportunities();
 
-  const active = opportunities.filter(
-    item => item.status === "active"
-  );
+  const opportunities =
+    getOpportunities();
 
-  const closed = opportunities.filter(
-    item => item.status === "closed"
-  );
+  const active =
+    opportunities.filter(
+      item =>
+        item.status === "active"
+    );
 
-  const categories = new Set(
-    opportunities.map(item => item.category)
-  );
+  const closed =
+    opportunities.filter(
+      item =>
+        item.status === "closed"
+    );
+
+  const categories =
+    new Set(
+      opportunities.map(
+        item => item.category
+      )
+    );
 
   document.getElementById(
     "totalOpportunities"
-  ).textContent = opportunities.length;
+  ).textContent =
+    opportunities.length;
 
   document.getElementById(
     "activeOpportunities"
-  ).textContent = active.length;
+  ).textContent =
+    active.length;
 
   document.getElementById(
     "closedOpportunities"
-  ).textContent = closed.length;
+  ).textContent =
+    closed.length;
 
   document.getElementById(
     "totalCategories"
-  ).textContent = categories.size;
+  ).textContent =
+    categories.size;
 
   document.getElementById(
     "recentOpportunities"
-  ).innerHTML = createTable(
-    opportunities.slice(0, 5)
-  );
+  ).innerHTML =
+    createOpportunityTable(
+      opportunities.slice(0, 5)
+    );
+
 }
 
+
 const adminSearch =
-  document.getElementById("adminSearch");
+  document.getElementById(
+    "adminSearch"
+  );
 
 const adminStatusFilter =
-  document.getElementById("adminStatusFilter");
+  document.getElementById(
+    "adminStatusFilter"
+  );
+
 
 function renderOpportunityTable() {
+
   const keyword =
-    adminSearch.value.toLowerCase().trim();
+    adminSearch.value
+      .toLowerCase()
+      .trim();
 
   const status =
     adminStatusFilter.value;
 
-  const opportunities = getOpportunities().filter(item => {
-    const searchable = `
-      ${item.title}
-      ${item.category}
-      ${item.location}
-      ${item.description}
-    `.toLowerCase();
+  const opportunities =
+    getOpportunities()
+      .filter(item => {
 
-    const matchesKeyword =
-      searchable.includes(keyword);
+        const searchable = `
+          ${item.title}
+          ${item.category}
+          ${item.location}
+          ${item.description}
+        `.toLowerCase();
 
-    const matchesStatus =
-      status === "all" ||
-      item.status === status;
+        return (
 
-    return matchesKeyword && matchesStatus;
-  });
+          searchable.includes(
+            keyword
+          )
+
+          &&
+
+          (
+            status === "all" ||
+            item.status === status
+          )
+
+        );
+
+      });
 
   document.getElementById(
     "opportunityTable"
-  ).innerHTML = createTable(opportunities);
+  ).innerHTML =
+    createOpportunityTable(
+      opportunities
+    );
+
 }
+
 
 adminSearch.addEventListener(
   "input",
@@ -496,369 +995,454 @@ adminStatusFilter.addEventListener(
   renderOpportunityTable
 );
 
-function renderAll() {
-  renderDashboard();
-  renderOpportunityTable();
-}
-
-function escapeHTML(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-renderAll();
-
 
 /* =========================================
-   PARTNER REGISTRATION MANAGEMENT
+   SUPABASE PARTNERS
 ========================================= */
 
-const PARTNER_STORAGE_KEY = "tokopeluang_partners";
+let onlinePartners = [];
 
-function getPartners() {
-  try {
-    return JSON.parse(
-      localStorage.getItem(PARTNER_STORAGE_KEY) || "[]"
-    );
-  } catch (error) {
-    console.error("Gagal membaca data mitra:", error);
-    return [];
+
+async function loadPartners() {
+
+  const {
+    data,
+    error
+  } =
+    await adminSupabase
+      .from("partners")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+  if (error) {
+
+    console.error(error);
+
+    throw error;
+
   }
+
+  onlinePartners =
+    data || [];
+
+  return onlinePartners;
+
 }
 
-function savePartners(partners) {
-  localStorage.setItem(
-    PARTNER_STORAGE_KEY,
-    JSON.stringify(partners)
-  );
-}
 
-function escapePartnerHTML(value = "") {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+function getPartnerStatusLabel(
+  status
+) {
 
-function getPartnerStatusLabel(status) {
-  const labels = {
+  return {
+
     pending: "MENUNGGU",
     approved: "DITERIMA",
     rejected: "DITOLAK"
-  };
 
-  return labels[status] || status;
+  }[status] || status;
+
 }
 
-function getPartnerStatusClass(status) {
-  const classes = {
-    pending: "partner-status-pending",
-    approved: "partner-status-approved",
-    rejected: "partner-status-rejected"
-  };
 
-  return classes[status] || "";
+function getPartnerStatusClass(
+  status
+) {
+
+  return {
+
+    pending:
+      "partner-status-pending",
+
+    approved:
+      "partner-status-approved",
+
+    rejected:
+      "partner-status-rejected"
+
+  }[status] || "";
+
 }
 
-function renderPartnerTable() {
-  const table = document.getElementById("partnerTable");
+
+async function renderPartnerTable() {
+
+  const table =
+    document.getElementById(
+      "partnerTable"
+    );
 
   if (!table) return;
 
-  const searchInput =
-    document.getElementById("partnerSearch");
+  table.innerHTML = `
+    <div class="empty-state">
+      Memuat data mitra...
+    </div>
+  `;
 
-  const statusFilter =
-    document.getElementById("partnerStatusFilter");
+  try {
 
-  const keyword = searchInput
-    ? searchInput.value.toLowerCase().trim()
-    : "";
+    await loadPartners();
 
-  const status = statusFilter
-    ? statusFilter.value
-    : "all";
+    const keyword =
+      document
+        .getElementById(
+          "partnerSearch"
+        )
+        .value
+        .toLowerCase()
+        .trim();
 
-  const partners = getPartners().filter(partner => {
+    const status =
+      document
+        .getElementById(
+          "partnerStatusFilter"
+        )
+        .value;
 
-    const searchable = `
-      ${partner.name || ""}
-      ${partner.businessName || ""}
-      ${partner.email || ""}
-      ${partner.phone || ""}
-      ${partner.category || ""}
-      ${partner.serviceArea || ""}
-      ${partner.service || ""}
-    `.toLowerCase();
+    const partners =
+      onlinePartners.filter(
+        partner => {
 
-    const matchesKeyword =
-      searchable.includes(keyword);
+          const searchable = `
+            ${partner.name || ""}
+            ${partner.business_name || ""}
+            ${partner.email || ""}
+            ${partner.phone || ""}
+            ${partner.category || ""}
+            ${partner.service_area || ""}
+            ${partner.service || ""}
+          `.toLowerCase();
 
-    const matchesStatus =
-      status === "all" ||
-      partner.status === status;
+          return (
 
-    return matchesKeyword && matchesStatus;
-  });
+            searchable.includes(
+              keyword
+            )
 
-  const totalElement =
-    document.getElementById("partnerTotal");
+            &&
 
-  if (totalElement) {
-    totalElement.textContent =
-      getPartners().length;
-  }
+            (
+              status === "all" ||
+              partner.status === status
+            )
 
-  if (!partners.length) {
-    table.innerHTML = `
-      <div class="empty-state">
-        <strong>Belum ada pendaftaran mitra.</strong>
-        Data pendaftar dari halaman Daftar Mitra akan muncul di sini.
-      </div>
-    `;
+          );
+
+        }
+      );
+
+    document.getElementById(
+      "partnerTotal"
+    ).textContent =
+      onlinePartners.length;
 
     updatePartnerNotification();
-    return;
-  }
 
-  table.innerHTML = `
-    <div class="partner-admin-grid">
+    if (!partners.length) {
 
-      ${partners.map(partner => `
+      table.innerHTML = `
+        <div class="empty-state">
+          <strong>
+            Tidak ada data mitra.
+          </strong>
+        </div>
+      `;
 
-        <article class="partner-admin-card">
+      return;
 
-          <div class="partner-card-header">
+    }
 
-            <div>
-              <span class="partner-business-category">
-                ${escapePartnerHTML(partner.category)}
+    table.innerHTML = `
+      <div class="partner-admin-grid">
+
+        ${partners.map(partner => `
+
+          <article class="partner-admin-card">
+
+            <div class="partner-card-header">
+
+              <div>
+
+                <span class="partner-business-category">
+                  ${escapeHTML(partner.category)}
+                </span>
+
+                <h3>
+                  ${escapeHTML(partner.business_name)}
+                </h3>
+
+                <p>
+                  ${escapeHTML(partner.name)}
+                </p>
+
+              </div>
+
+              <span class="partner-status-badge ${getPartnerStatusClass(partner.status)}">
+
+                ${getPartnerStatusLabel(partner.status)}
+
               </span>
 
-              <h3>
-                ${escapePartnerHTML(partner.businessName)}
-              </h3>
+            </div>
+
+            <div class="partner-details">
+
+              <div>
+                <small>Nomor Kontak</small>
+                <strong>
+                  ${escapeHTML(partner.phone)}
+                </strong>
+              </div>
+
+              <div>
+                <small>Email</small>
+                <strong>
+                  ${escapeHTML(partner.email)}
+                </strong>
+              </div>
+
+              <div>
+                <small>Wilayah</small>
+                <strong>
+                  ${escapeHTML(partner.service_area)}
+                </strong>
+              </div>
+
+            </div>
+
+            <div class="partner-service-box">
+
+              <small>
+                PRODUK / JASA
+              </small>
 
               <p>
-                ${escapePartnerHTML(partner.name)}
+                ${escapeHTML(partner.service)}
               </p>
+
             </div>
 
-            <span class="partner-status-badge ${getPartnerStatusClass(partner.status)}">
-              ${getPartnerStatusLabel(partner.status)}
-            </span>
+            <div class="partner-card-actions">
 
-          </div>
+              ${
+                partner.status !==
+                "approved"
 
-          <div class="partner-details">
-
-            <div>
-              <small>Nomor Kontak</small>
-              <strong>
-                ${escapePartnerHTML(partner.phone)}
-              </strong>
-            </div>
-
-            <div>
-              <small>Email</small>
-              <strong>
-                ${escapePartnerHTML(partner.email)}
-              </strong>
-            </div>
-
-            <div>
-              <small>Wilayah Layanan</small>
-              <strong>
-                ${escapePartnerHTML(partner.serviceArea)}
-              </strong>
-            </div>
-
-          </div>
-
-          <div class="partner-service-box">
-            <small>PRODUK / JASA</small>
-            <p>
-              ${escapePartnerHTML(partner.service)}
-            </p>
-          </div>
-
-          <div class="partner-card-actions">
-
-            ${
-              partner.status !== "approved"
                 ? `
                   <button
                     class="partner-action approve-partner"
-                    onclick="approvePartner(${partner.id})"
+                    onclick="updatePartnerStatus(${partner.id}, 'approved')"
                   >
                     ✓ Terima
                   </button>
                 `
-                : ""
-            }
 
-            ${
-              partner.status !== "rejected"
+                : ""
+              }
+
+              ${
+                partner.status !==
+                "rejected"
+
                 ? `
                   <button
                     class="partner-action reject-partner"
-                    onclick="rejectPartner(${partner.id})"
+                    onclick="updatePartnerStatus(${partner.id}, 'rejected')"
                   >
                     Tolak
                   </button>
                 `
+
                 : ""
-            }
+              }
 
-            <a
-              href="mailto:${encodeURIComponent(partner.email)}?subject=${encodeURIComponent(
-                "TokoPeluang - Pendaftaran Mitra " +
-                partner.businessName
-              )}"
-              class="partner-action"
-            >
-              Email
-            </a>
+              <a
+                href="mailto:${encodeURIComponent(partner.email)}"
+                class="partner-action"
+              >
+                Email
+              </a>
 
-            <button
-              class="partner-action delete-partner"
-              onclick="deletePartner(${partner.id})"
-            >
-              Hapus
-            </button>
+              <button
+                class="partner-action delete-partner"
+                onclick="deletePartner(${partner.id})"
+              >
+                Hapus
+              </button>
 
-          </div>
+            </div>
 
-        </article>
+          </article>
 
-      `).join("")}
+        `).join("")}
 
-    </div>
-  `;
+      </div>
+    `;
 
-  updatePartnerNotification();
+  } catch (error) {
+
+    table.innerHTML = `
+      <div class="empty-state">
+
+        <strong>
+          Gagal memuat data mitra.
+        </strong>
+
+        Periksa login Admin dan policy Supabase.
+
+      </div>
+    `;
+
+  }
+
 }
 
-window.approvePartner = function(id) {
 
-  const partners = getPartners().map(partner => {
+window.updatePartnerStatus =
+  async function(
+    id,
+    status
+  ) {
 
-    if (partner.id === id) {
-      return {
-        ...partner,
-        status: "approved",
-        updatedAt: new Date().toISOString()
-      };
+    const {
+      error
+    } =
+      await adminSupabase
+        .from("partners")
+        .update({
+          status,
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq("id", id);
+
+    if (error) {
+
+      alert(
+        "Gagal memperbarui status."
+      );
+
+      console.error(error);
+
+      return;
+
     }
 
-    return partner;
-  });
+    await renderPartnerTable();
 
-  savePartners(partners);
-  renderPartnerTable();
+  };
 
-  alert("Mitra berhasil diterima.");
-};
 
-window.rejectPartner = function(id) {
+window.deletePartner =
+  async function(id) {
 
-  const partners = getPartners().map(partner => {
+    if (
+      !confirm(
+        "Hapus data mitra ini?"
+      )
+    ) return;
 
-    if (partner.id === id) {
-      return {
-        ...partner,
-        status: "rejected",
-        updatedAt: new Date().toISOString()
-      };
+    const {
+      error
+    } =
+      await adminSupabase
+        .from("partners")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+
+      alert(
+        "Gagal menghapus data."
+      );
+
+      console.error(error);
+
+      return;
+
     }
 
-    return partner;
-  });
+    await renderPartnerTable();
 
-  savePartners(partners);
-  renderPartnerTable();
+  };
 
-  alert("Pendaftaran mitra telah ditolak.");
-};
-
-window.deletePartner = function(id) {
-
-  const confirmed = confirm(
-    "Apakah Anda yakin ingin menghapus data mitra ini?"
-  );
-
-  if (!confirmed) return;
-
-  const partners = getPartners().filter(
-    partner => partner.id !== id
-  );
-
-  savePartners(partners);
-  renderPartnerTable();
-};
 
 function updatePartnerNotification() {
 
   const notification =
-    document.getElementById("partnerNotification");
+    document.getElementById(
+      "partnerNotification"
+    );
 
   if (!notification) return;
 
-  const pendingPartners =
-    getPartners().filter(
-      partner => partner.status === "pending"
-    );
+  const pending =
+    onlinePartners.filter(
+      partner =>
+        partner.status ===
+        "pending"
+    ).length;
 
-  if (pendingPartners.length > 0) {
+  if (pending > 0) {
 
     notification.textContent =
-      pendingPartners.length;
+      pending;
 
-    notification.classList.remove("hidden");
+    notification.classList.remove(
+      "hidden"
+    );
 
   } else {
 
-    notification.classList.add("hidden");
+    notification.classList.add(
+      "hidden"
+    );
 
   }
+
 }
 
-const partnerSearch =
-  document.getElementById("partnerSearch");
 
-if (partnerSearch) {
-
-  partnerSearch.addEventListener(
+document
+  .getElementById(
+    "partnerSearch"
+  )
+  .addEventListener(
     "input",
     renderPartnerTable
   );
 
-}
 
-const partnerStatusFilter =
-  document.getElementById("partnerStatusFilter");
-
-if (partnerStatusFilter) {
-
-  partnerStatusFilter.addEventListener(
+document
+  .getElementById(
+    "partnerStatusFilter"
+  )
+  .addEventListener(
     "change",
     renderPartnerTable
   );
 
+
+/* =========================================
+   RENDER
+========================================= */
+
+function renderAll() {
+
+  renderDashboard();
+  renderOpportunityTable();
+
 }
 
-if (sections) {
 
-  sections.partners =
-    document.getElementById("partnersSection");
+/* =========================================
+   START APPLICATION
+========================================= */
 
-}
-
-renderPartnerTable();
-updatePartnerNotification();
+validateAdminSession();

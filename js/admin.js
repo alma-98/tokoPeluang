@@ -133,7 +133,8 @@ function showSection(sectionName) {
   const titles = {
     dashboard: "Dashboard",
     opportunities: "Kelola Peluang",
-    add: "Tambah Peluang"
+    add: "Tambah Peluang",
+    partners: "Pendaftaran Mitra"
   };
 
   pageTitle.textContent = titles[sectionName];
@@ -510,3 +511,354 @@ function escapeHTML(value = "") {
 }
 
 renderAll();
+
+
+/* =========================================
+   PARTNER REGISTRATION MANAGEMENT
+========================================= */
+
+const PARTNER_STORAGE_KEY = "tokopeluang_partners";
+
+function getPartners() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(PARTNER_STORAGE_KEY) || "[]"
+    );
+  } catch (error) {
+    console.error("Gagal membaca data mitra:", error);
+    return [];
+  }
+}
+
+function savePartners(partners) {
+  localStorage.setItem(
+    PARTNER_STORAGE_KEY,
+    JSON.stringify(partners)
+  );
+}
+
+function escapePartnerHTML(value = "") {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function getPartnerStatusLabel(status) {
+  const labels = {
+    pending: "MENUNGGU",
+    approved: "DITERIMA",
+    rejected: "DITOLAK"
+  };
+
+  return labels[status] || status;
+}
+
+function getPartnerStatusClass(status) {
+  const classes = {
+    pending: "partner-status-pending",
+    approved: "partner-status-approved",
+    rejected: "partner-status-rejected"
+  };
+
+  return classes[status] || "";
+}
+
+function renderPartnerTable() {
+  const table = document.getElementById("partnerTable");
+
+  if (!table) return;
+
+  const searchInput =
+    document.getElementById("partnerSearch");
+
+  const statusFilter =
+    document.getElementById("partnerStatusFilter");
+
+  const keyword = searchInput
+    ? searchInput.value.toLowerCase().trim()
+    : "";
+
+  const status = statusFilter
+    ? statusFilter.value
+    : "all";
+
+  const partners = getPartners().filter(partner => {
+
+    const searchable = `
+      ${partner.name || ""}
+      ${partner.businessName || ""}
+      ${partner.email || ""}
+      ${partner.phone || ""}
+      ${partner.category || ""}
+      ${partner.serviceArea || ""}
+      ${partner.service || ""}
+    `.toLowerCase();
+
+    const matchesKeyword =
+      searchable.includes(keyword);
+
+    const matchesStatus =
+      status === "all" ||
+      partner.status === status;
+
+    return matchesKeyword && matchesStatus;
+  });
+
+  const totalElement =
+    document.getElementById("partnerTotal");
+
+  if (totalElement) {
+    totalElement.textContent =
+      getPartners().length;
+  }
+
+  if (!partners.length) {
+    table.innerHTML = `
+      <div class="empty-state">
+        <strong>Belum ada pendaftaran mitra.</strong>
+        Data pendaftar dari halaman Daftar Mitra akan muncul di sini.
+      </div>
+    `;
+
+    updatePartnerNotification();
+    return;
+  }
+
+  table.innerHTML = `
+    <div class="partner-admin-grid">
+
+      ${partners.map(partner => `
+
+        <article class="partner-admin-card">
+
+          <div class="partner-card-header">
+
+            <div>
+              <span class="partner-business-category">
+                ${escapePartnerHTML(partner.category)}
+              </span>
+
+              <h3>
+                ${escapePartnerHTML(partner.businessName)}
+              </h3>
+
+              <p>
+                ${escapePartnerHTML(partner.name)}
+              </p>
+            </div>
+
+            <span class="partner-status-badge ${getPartnerStatusClass(partner.status)}">
+              ${getPartnerStatusLabel(partner.status)}
+            </span>
+
+          </div>
+
+          <div class="partner-details">
+
+            <div>
+              <small>Nomor Kontak</small>
+              <strong>
+                ${escapePartnerHTML(partner.phone)}
+              </strong>
+            </div>
+
+            <div>
+              <small>Email</small>
+              <strong>
+                ${escapePartnerHTML(partner.email)}
+              </strong>
+            </div>
+
+            <div>
+              <small>Wilayah Layanan</small>
+              <strong>
+                ${escapePartnerHTML(partner.serviceArea)}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="partner-service-box">
+            <small>PRODUK / JASA</small>
+            <p>
+              ${escapePartnerHTML(partner.service)}
+            </p>
+          </div>
+
+          <div class="partner-card-actions">
+
+            ${
+              partner.status !== "approved"
+                ? `
+                  <button
+                    class="partner-action approve-partner"
+                    onclick="approvePartner(${partner.id})"
+                  >
+                    ✓ Terima
+                  </button>
+                `
+                : ""
+            }
+
+            ${
+              partner.status !== "rejected"
+                ? `
+                  <button
+                    class="partner-action reject-partner"
+                    onclick="rejectPartner(${partner.id})"
+                  >
+                    Tolak
+                  </button>
+                `
+                : ""
+            }
+
+            <a
+              href="mailto:${encodeURIComponent(partner.email)}?subject=${encodeURIComponent(
+                "TokoPeluang - Pendaftaran Mitra " +
+                partner.businessName
+              )}"
+              class="partner-action"
+            >
+              Email
+            </a>
+
+            <button
+              class="partner-action delete-partner"
+              onclick="deletePartner(${partner.id})"
+            >
+              Hapus
+            </button>
+
+          </div>
+
+        </article>
+
+      `).join("")}
+
+    </div>
+  `;
+
+  updatePartnerNotification();
+}
+
+window.approvePartner = function(id) {
+
+  const partners = getPartners().map(partner => {
+
+    if (partner.id === id) {
+      return {
+        ...partner,
+        status: "approved",
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    return partner;
+  });
+
+  savePartners(partners);
+  renderPartnerTable();
+
+  alert("Mitra berhasil diterima.");
+};
+
+window.rejectPartner = function(id) {
+
+  const partners = getPartners().map(partner => {
+
+    if (partner.id === id) {
+      return {
+        ...partner,
+        status: "rejected",
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    return partner;
+  });
+
+  savePartners(partners);
+  renderPartnerTable();
+
+  alert("Pendaftaran mitra telah ditolak.");
+};
+
+window.deletePartner = function(id) {
+
+  const confirmed = confirm(
+    "Apakah Anda yakin ingin menghapus data mitra ini?"
+  );
+
+  if (!confirmed) return;
+
+  const partners = getPartners().filter(
+    partner => partner.id !== id
+  );
+
+  savePartners(partners);
+  renderPartnerTable();
+};
+
+function updatePartnerNotification() {
+
+  const notification =
+    document.getElementById("partnerNotification");
+
+  if (!notification) return;
+
+  const pendingPartners =
+    getPartners().filter(
+      partner => partner.status === "pending"
+    );
+
+  if (pendingPartners.length > 0) {
+
+    notification.textContent =
+      pendingPartners.length;
+
+    notification.classList.remove("hidden");
+
+  } else {
+
+    notification.classList.add("hidden");
+
+  }
+}
+
+const partnerSearch =
+  document.getElementById("partnerSearch");
+
+if (partnerSearch) {
+
+  partnerSearch.addEventListener(
+    "input",
+    renderPartnerTable
+  );
+
+}
+
+const partnerStatusFilter =
+  document.getElementById("partnerStatusFilter");
+
+if (partnerStatusFilter) {
+
+  partnerStatusFilter.addEventListener(
+    "change",
+    renderPartnerTable
+  );
+
+}
+
+if (sections) {
+
+  sections.partners =
+    document.getElementById("partnersSection");
+
+}
+
+renderPartnerTable();
+updatePartnerNotification();

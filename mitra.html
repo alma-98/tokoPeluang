@@ -171,51 +171,40 @@
 <script src="js/app.js"></script>
 
 <script>
+const PARTNER_STORAGE_KEY = "tokopeluang_partners";
+
 document.getElementById("partnerForm").addEventListener("submit", function(event) {
   event.preventDefault();
 
-  const name = document.getElementById("partnerName").value;
-  const business = document.getElementById("businessName").value;
-  const phone = document.getElementById("partnerPhone").value;
-  const email = document.getElementById("partnerEmail").value;
-  const category = document.getElementById("businessCategory").value;
-  const area = document.getElementById("serviceArea").value;
-  const service = document.getElementById("partnerService").value;
+  const partner = {
+    id: Date.now(),
+    name: document.getElementById("partnerName").value.trim(),
+    businessName: document.getElementById("businessName").value.trim(),
+    phone: document.getElementById("partnerPhone").value.trim(),
+    email: document.getElementById("partnerEmail").value.trim(),
+    category: document.getElementById("businessCategory").value,
+    serviceArea: document.getElementById("serviceArea").value.trim(),
+    service: document.getElementById("partnerService").value.trim(),
+    status: "pending",
+    createdAt: new Date().toISOString()
+  };
 
-  const subject = encodeURIComponent(
-    "Pendaftaran Mitra TokoPeluang - " + business
+  const partners = JSON.parse(
+    localStorage.getItem(PARTNER_STORAGE_KEY) || "[]"
   );
 
-  const body = encodeURIComponent(
-`PENDAFTARAN MITRA TOKOPELUANG
+  partners.unshift(partner);
 
-Nama:
-${name}
-
-Nama Usaha / Perusahaan:
-${business}
-
-Nomor Kontak:
-${phone}
-
-Email:
-${email}
-
-Bidang Usaha:
-${category}
-
-Wilayah Layanan:
-${area}
-
-Produk / Jasa:
-${service}`
+  localStorage.setItem(
+    PARTNER_STORAGE_KEY,
+    JSON.stringify(partners)
   );
 
-  window.location.href =
-    "mailto:alma.budsteddy88@gmail.com?subject=" +
-    subject +
-    "&body=" +
-    body;
+  document.getElementById("partnerForm").reset();
+
+  alert(
+    "Pendaftaran berhasil dikirim! Data Anda telah masuk ke Dashboard Admin TokoPeluang."
+  );
 });
 </script>
 

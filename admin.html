@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | TokoPeluang</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+<div id="adminLogin" class="admin-login">
+  <div class="login-card">
+    <a href="index.html" class="logo">Toko<span>Peluang</span></a>
+
+    <span class="admin-label">ADMIN DASHBOARD</span>
+    <h1>Kelola Peluang Bisnis</h1>
+    <p>Masukkan PIN demo untuk membuka dashboard.</p>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label>PIN Admin</label>
+        <input
+          type="password"
+          id="adminPin"
+          maxlength="6"
+          inputmode="numeric"
+          placeholder="Masukkan PIN"
+          required
+        >
+      </div>
+
+      <button type="submit" class="btn btn-primary admin-full-btn">
+        Masuk Dashboard
+      </button>
+
+      <p id="loginError" class="login-error"></p>
+    </form>
+
+    <p class="demo-pin">Demo PIN: 1234</p>
+  </div>
+</div>
+
+<div id="adminApp" class="admin-app hidden">
+
+  <aside class="admin-sidebar">
+    <div>
+      <a href="index.html" class="logo admin-logo">
+        Toko<span>Peluang</span>
+      </a>
+
+      <span class="sidebar-small">ADMIN PANEL</span>
+    </div>
+
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" data-section="dashboard">
+        <span>▦</span>
+        Dashboard
+      </button>
+
+      <button class="admin-nav-item" data-section="opportunities">
+        <span>◎</span>
+        Kelola Peluang
+      </button>
+
+      <button class="admin-nav-item" data-section="add">
+        <span>＋</span>
+        Tambah Peluang
+      </button>
+
+      <a href="index.html" class="admin-nav-item">
+        <span>↗</span>
+        Lihat Website
+      </a>
+    </nav>
+
+    <button id="logoutBtn" class="logout-btn">
+      Keluar Admin
+    </button>
+  </aside>
+
+  <main class="admin-main">
+
+    <header class="admin-topbar">
+      <div>
+        <span class="admin-eyebrow">TOKOPELUANG</span>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+
+      <button id="mobileSidebarBtn" class="mobile-sidebar-btn">
+        ☰
+      </button>
+
+      <div class="admin-profile">
+        <div class="admin-avatar">A</div>
+        <div>
+          <strong>Alma</strong>
+          <small>Administrator</small>
+        </div>
+      </div>
+    </header>
+
+    <section id="dashboardSection" class="admin-section active-section">
+
+      <div class="admin-welcome">
+        <div>
+          <span>INVESTMENT TECHNOLOGY INDONESIA</span>
+          <h2>Selamat datang, Alma.</h2>
+          <p>
+            Kelola peluang bisnis, proyek, kebutuhan vendor,
+            dan pengadaan dari satu dashboard.
+          </p>
+        </div>
+
+        <button class="btn btn-primary go-add-btn">
+          + Tambah Peluang
+        </button>
+      </div>
+
+      <div class="admin-stats">
+
+        <div class="stat-card">
+          <span>Total Peluang</span>
+          <strong id="totalOpportunities">0</strong>
+          <small>Semua data peluang</small>
+        </div>
+
+        <div class="stat-card">
+          <span>Peluang Aktif</span>
+          <strong id="activeOpportunities">0</strong>
+          <small>Sedang terbuka</small>
+        </div>
+
+        <div class="stat-card">
+          <span>Peluang Ditutup</span>
+          <strong id="closedOpportunities">0</strong>
+          <small>Tidak menerima penawaran</small>
+        </div>
+
+        <div class="stat-card">
+          <span>Kategori</span>
+          <strong id="totalCategories">0</strong>
+          <small>Kategori aktif</small>
+        </div>
+
+      </div>
+
+      <div class="admin-panel">
+        <div class="panel-heading">
+          <div>
+            <span>DATA TERBARU</span>
+            <h2>Peluang Terbaru</h2>
+          </div>
+
+          <button class="text-button go-opportunities-btn">
+            Lihat Semua →
+          </button>
+        </div>
+
+        <div id="recentOpportunities"></div>
+      </div>
+
+    </section>
+
+    <section id="opportunitiesSection" class="admin-section">
+
+      <div class="admin-panel">
+        <div class="panel-heading responsive-heading">
+          <div>
+            <span>MANAJEMEN DATA</span>
+            <h2>Semua Peluang</h2>
+          </div>
+
+          <button class="btn btn-primary go-add-btn">
+            + Tambah Peluang
+          </button>
+        </div>
+
+        <div class="admin-filter">
+          <input
+            type="text"
+            id="adminSearch"
+            placeholder="Cari judul, kategori, lokasi..."
+          >
+
+          <select id="adminStatusFilter">
+            <option value="all">Semua Status</option>
+            <option value="active">Aktif</option>
+            <option value="closed">Ditutup</option>
+          </select>
+        </div>
+
+        <div id="opportunityTable"></div>
+      </div>
+
+    </section>
+
+    <section id="addSection" class="admin-section">
+
+      <div class="admin-panel form-panel">
+
+        <div class="panel-heading">
+          <div>
+            <span id="formModeLabel">PELUANG BARU</span>
+            <h2 id="formTitle">Tambah Peluang</h2>
+          </div>
+        </div>
+
+        <form id="adminOpportunityForm">
+
+          <input type="hidden" id="editOpportunityId">
+
+          <div class="admin-form-grid">
+
+            <div class="form-group full-grid">
+              <label>Judul Peluang</label>
+              <input
+                type="text"
+                id="adminTitle"
+                placeholder="Contoh: Mencari Vendor Instalasi CCTV"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label>Kategori</label>
+              <select id="adminCategory" required>
+                <option value="">Pilih kategori</option>
+                <option>IT & Software</option>
+                <option>CCTV & Security</option>
+                <option>Otomotif</option>
+                <option>Konstruksi</option>
+                <option>Pengadaan Barang</option>
+                <option>Digital Marketing</option>
+                <option>Desain</option>
+                <option>Event</option>
+                <option>Catering</option>
+                <option>Logistik</option>
+                <option>UMKM</option>
+                <option>Lainnya</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Lokasi</label>
+              <input
+                type="text"
+                id="adminLocation"
+                placeholder="Contoh: Jawa Barat"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label>Estimasi Anggaran</label>
+              <input
+                type="text"
+                id="adminBudget"
+                placeholder="Contoh: Rp10.000.000"
+              >
+            </div>
+
+            <div class="form-group">
+              <label>Status</label>
+              <select id="adminStatus" required>
+                <option value="active">Aktif</option>
+                <option value="closed">Ditutup</option>
+              </select>
+            </div>
+
+            <div class="form-group full-grid">
+              <label>Deskripsi Singkat</label>
+              <textarea
+                id="adminDescription"
+                rows="5"
+                placeholder="Jelaskan kebutuhan atau peluang..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group full-grid">
+              <label>Persyaratan</label>
+              <textarea
+                id="adminRequirements"
+                rows="6"
+                placeholder="Pisahkan setiap persyaratan dengan baris baru."
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="submit" class="btn btn-primary">
+              Simpan Peluang
+            </button>
+
+            <button
+              type="button"
+              id="cancelEditBtn"
+              class="btn admin-secondary-btn hidden"
+            >
+              Batal Edit
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -595,3 +595,134 @@
   }
 
 }
+
+
+/* ==========================================================
+   TOKOPELUANG QRIS VISUAL CROP
+   File QRIS asli tidak dimodifikasi.
+   Area QR utama tetap utuh.
+========================================================== */
+
+.qris-image-wrap {
+  position: relative !important;
+
+  width: 100% !important;
+  max-width: 380px !important;
+
+  margin:
+    20px auto
+    0 !important;
+
+  padding: 0 !important;
+
+  /*
+    Menyembunyikan bagian bawah poster secara visual.
+    QR code utama tetap ditampilkan.
+  */
+
+  aspect-ratio: 1 / 1.18;
+
+  overflow: hidden !important;
+
+  background: #ffffff !important;
+
+  border:
+    1px solid
+    #eeeeee !important;
+
+  border-radius:
+    18px !important;
+}
+
+
+.qris-image-wrap .qris-image {
+  display: block !important;
+
+  width: 100% !important;
+  height: auto !important;
+
+  margin: 0 !important;
+
+  border-radius:
+    0 !important;
+
+  object-fit:
+    contain !important;
+
+  object-position:
+    top center !important;
+}
+
+
+/*
+  Overlay putih hanya menutup area bawah poster.
+  Tidak menutup area QR code.
+*/
+
+.qris-image-wrap::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 17%;
+
+  background: #ffffff;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/*
+  Identitas pembayaran TokoPeluang
+*/
+
+.qris-card::after {
+  content:
+    "Pembayaran TokoPeluang";
+
+  display: block;
+
+  margin-top: 14px;
+
+  padding: 12px 15px;
+
+  background: #111111;
+  color: #ffffff;
+
+  border-radius: 10px;
+
+  text-align: center;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  letter-spacing: .5px;
+}
+
+
+/*
+  Jangan tampilkan blok merchant tambahan
+*/
+
+.merchant-information {
+  display:
+    none !important;
+}
+
+
+@media (
+  max-width: 560px
+) {
+
+  .qris-image-wrap {
+    max-width:
+      100% !important;
+  }
+
+}

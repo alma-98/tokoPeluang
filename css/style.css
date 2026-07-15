@@ -1404,3 +1404,168 @@ footer {
   }
 
 }
+
+
+/* ==========================================================
+   TOKOPELUANG MULTI TYPE DROPDOWN V2
+========================================================== */
+
+.opportunity-multi-dropdowns {
+  overflow: visible;
+  flex-wrap: wrap;
+  padding-bottom: 15px;
+}
+
+.type-dropdown {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.type-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.type-dropdown-toggle span {
+  font-size: 14px;
+  transition: transform .2s ease;
+}
+
+.type-dropdown.open
+.type-dropdown-toggle span {
+  transform: rotate(180deg);
+}
+
+.type-dropdown-menu {
+  position: absolute;
+  z-index: 900;
+  top: calc(100% + 10px);
+  left: 0;
+
+  width: 330px;
+  max-height: 430px;
+  overflow-y: auto;
+
+  padding: 10px;
+
+  background: #fff;
+  border: 1px solid #e7e7e7;
+  border-radius: 15px;
+
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, .16);
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(8px);
+  transition: .18s ease;
+}
+
+.type-dropdown:nth-last-child(-n+4)
+.type-dropdown-menu {
+  left: auto;
+  right: 0;
+}
+
+.type-dropdown.open
+.type-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.type-dropdown-heading {
+  padding: 9px 10px 13px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #eee;
+}
+
+.type-dropdown-heading span {
+  display: block;
+  color: #e31b23;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.3px;
+  margin-bottom: 4px;
+}
+
+.type-dropdown-heading strong {
+  display: block;
+  color: #222;
+  font-size: 15px;
+}
+
+.type-dropdown-menu button {
+  display: block;
+  width: 100%;
+
+  border: 0;
+  background: transparent;
+
+  padding: 11px 12px;
+
+  color: #333;
+  border-radius: 8px;
+
+  text-align: left;
+
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.type-dropdown-menu button:hover {
+  background: #f6f6f6;
+  color: #e31b23;
+}
+
+.type-dropdown-menu button.active {
+  background: #e31b23;
+  color: #fff;
+}
+
+.type-dropdown-toggle.active {
+  background: #e31b23;
+  border-color: #e31b23;
+  color: #fff;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .opportunity-multi-dropdowns {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 12px;
+  }
+
+  .type-dropdown {
+    position: static;
+  }
+
+  .type-dropdown-menu {
+    position: fixed;
+
+    left: 15px !important;
+    right: 15px !important;
+
+    top: auto;
+    bottom: 18px;
+
+    width: auto;
+    max-height: 65vh;
+
+    z-index: 9999;
+  }
+
+}

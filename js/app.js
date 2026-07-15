@@ -662,3 +662,334 @@ document.addEventListener(
 
   }
 );
+
+
+/* ==========================================================
+   TOKOPELUANG MULTI DROPDOWN FILTER V2
+========================================================== */
+
+(function () {
+
+  const typeDropdowns =
+    document.querySelectorAll(
+      ".type-dropdown"
+    );
+
+  const allOpportunityButton =
+    document.querySelector(
+      '[data-opportunity-filter="all"]'
+    );
+
+
+  function closeAllTypeDropdowns() {
+
+    typeDropdowns.forEach(
+      dropdown => {
+
+        dropdown.classList.remove(
+          "open"
+        );
+
+      }
+    );
+
+  }
+
+
+  function clearActiveTypeButtons() {
+
+    document
+      .querySelectorAll(
+        "[data-opportunity-filter]"
+      )
+      .forEach(button => {
+
+        button.classList.remove(
+          "active"
+        );
+
+      });
+
+    document
+      .querySelectorAll(
+        ".type-dropdown-toggle"
+      )
+      .forEach(button => {
+
+        button.classList.remove(
+          "active"
+        );
+
+      });
+
+  }
+
+
+  function filterOpportunityCards(
+    selectedFilter
+  ) {
+
+    const cards =
+      document.querySelectorAll(
+        ".opportunity-card"
+      );
+
+    const searchInput =
+      document.getElementById(
+        "searchInput"
+      );
+
+    const categoryFilter =
+      document.getElementById(
+        "categoryFilter"
+      );
+
+    const keyword =
+      searchInput
+        ? searchInput.value
+            .toLowerCase()
+            .trim()
+        : "";
+
+    const category =
+      categoryFilter
+        ? categoryFilter.value
+        : "all";
+
+    cards.forEach(card => {
+
+      const searchable = (
+        card.innerText +
+        " " +
+        (
+          card.dataset.category ||
+          ""
+        ) +
+        " " +
+        (
+          card.dataset.type ||
+          ""
+        ) +
+        " " +
+        (
+          card.dataset.subcategory ||
+          ""
+        )
+      ).toLowerCase();
+
+      const matchesSearch =
+        searchable.includes(
+          keyword
+        );
+
+      const matchesCategory =
+        category === "all" ||
+        searchable.includes(
+          category.toLowerCase()
+        );
+
+      const matchesType =
+        selectedFilter === "all" ||
+        searchable.includes(
+          selectedFilter
+            .replaceAll("-", " ")
+            .toLowerCase()
+        ) ||
+        searchable.includes(
+          selectedFilter
+            .toLowerCase()
+        );
+
+      card.classList.toggle(
+        "hidden",
+        !(
+          matchesSearch &&
+          matchesCategory &&
+          matchesType
+        )
+      );
+
+    });
+
+  }
+
+
+  let currentMultiFilter =
+    "all";
+
+
+  typeDropdowns.forEach(
+    dropdown => {
+
+      const toggle =
+        dropdown.querySelector(
+          ".type-dropdown-toggle"
+        );
+
+      const options =
+        dropdown.querySelectorAll(
+          "[data-opportunity-filter]"
+        );
+
+      if (!toggle) return;
+
+
+      toggle.addEventListener(
+        "click",
+        event => {
+
+          event.stopPropagation();
+
+          const willOpen =
+            !dropdown.classList
+              .contains("open");
+
+          closeAllTypeDropdowns();
+
+          if (willOpen) {
+
+            dropdown.classList.add(
+              "open"
+            );
+
+          }
+
+        }
+      );
+
+
+      options.forEach(
+        option => {
+
+          option.addEventListener(
+            "click",
+            event => {
+
+              event.stopPropagation();
+
+              currentMultiFilter =
+                option.dataset
+                  .opportunityFilter;
+
+              clearActiveTypeButtons();
+
+              option.classList.add(
+                "active"
+              );
+
+              toggle.classList.add(
+                "active"
+              );
+
+              const label =
+                option.textContent
+                  .trim();
+
+              const arrow =
+                '<span>⌄</span>';
+
+              toggle.innerHTML =
+                label + " " + arrow;
+
+              closeAllTypeDropdowns();
+
+              filterOpportunityCards(
+                currentMultiFilter
+              );
+
+            }
+          );
+
+        }
+      );
+
+    }
+  );
+
+
+  if (allOpportunityButton) {
+
+    allOpportunityButton
+      .addEventListener(
+        "click",
+        function () {
+
+          currentMultiFilter =
+            "all";
+
+          clearActiveTypeButtons();
+
+          this.classList.add(
+            "active"
+          );
+
+          filterOpportunityCards(
+            "all"
+          );
+
+        }
+      );
+
+  }
+
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      if (
+        !event.target.closest(
+          ".type-dropdown"
+        )
+      ) {
+
+        closeAllTypeDropdowns();
+
+      }
+
+    }
+  );
+
+
+  const search =
+    document.getElementById(
+      "searchInput"
+    );
+
+  if (search) {
+
+    search.addEventListener(
+      "input",
+      function () {
+
+        filterOpportunityCards(
+          currentMultiFilter
+        );
+
+      }
+    );
+
+  }
+
+
+  const category =
+    document.getElementById(
+      "categoryFilter"
+    );
+
+  if (category) {
+
+    category.addEventListener(
+      "change",
+      function () {
+
+        filterOpportunityCards(
+          currentMultiFilter
+        );
+
+      }
+    );
+
+  }
+
+})();

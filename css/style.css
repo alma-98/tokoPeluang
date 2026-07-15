@@ -799,3 +799,400 @@ footer {
   cursor: not-allowed;
   transform: none;
 }
+
+
+/* ==========================================================
+   TOKOPELUANG MARKETPLACE NAVIGATION
+========================================================== */
+
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link,
+.nav-dropdown-toggle {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 12px 14px;
+  border-radius: 8px;
+  transition: .2s ease;
+}
+
+.nav-link:hover,
+.nav-dropdown-toggle:hover {
+  background: rgba(227, 27, 35, .07);
+  color: #e31b23;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-arrow {
+  font-size: 15px;
+  transition: transform .2s ease;
+}
+
+.nav-dropdown.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+
+/* MEGA MENU */
+
+.mega-menu {
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 14px);
+  left: 50%;
+  width: min(960px, calc(100vw - 40px));
+  transform:
+    translateX(-38%)
+    translateY(10px);
+  background: #fff;
+  color: #171717;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  box-shadow:
+    0 25px 70px rgba(0, 0, 0, .16);
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: .2s ease;
+}
+
+.nav-dropdown.open .mega-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform:
+    translateX(-38%)
+    translateY(0);
+}
+
+.mega-menu-header {
+  padding: 0 4px 18px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.mega-menu-header span {
+  display: block;
+  color: #e31b23;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  margin-bottom: 5px;
+}
+
+.mega-menu-header strong {
+  font-size: 18px;
+}
+
+.mega-menu-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.mega-menu-grid > a {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px;
+  border-radius: 10px;
+  color: #222;
+  text-decoration: none;
+  transition: .2s ease;
+}
+
+.mega-menu-grid > a:hover {
+  background: #f7f7f7;
+}
+
+.mega-menu-grid > a > span {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  background: #f2f2f2;
+  color: #e31b23;
+  font-weight: 900;
+}
+
+.mega-menu-grid strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.mega-menu-grid small {
+  display: block;
+  color: #888;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+
+/* SIMPLE DROPDOWN */
+
+.nav-simple-dropdown {
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 14px);
+  left: 0;
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, .14);
+  padding: 8px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: .2s ease;
+}
+
+.nav-dropdown.open
+.nav-simple-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.nav-simple-dropdown a {
+  display: block;
+  padding: 11px 13px;
+  border-radius: 8px;
+  color: #222;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nav-simple-dropdown a:hover {
+  background: #f7f7f7;
+  color: #e31b23;
+}
+
+
+/* ==========================================================
+   CATEGORY MARKETPLACE
+========================================================== */
+
+.category-explorer {
+  padding: 90px 0;
+  background: #111;
+  color: #fff;
+}
+
+.category-heading {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.2fr)
+    minmax(280px, .8fr);
+  align-items: end;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.category-heading span {
+  color: #e31b23;
+}
+
+.category-heading h2 {
+  color: #fff;
+}
+
+.category-heading p {
+  color: #999;
+  line-height: 1.8;
+}
+
+.category-marketplace-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  border-top: 1px solid #333;
+  border-left: 1px solid #333;
+}
+
+.category-marketplace-card {
+  min-height: 210px;
+  padding: 25px;
+  border-right: 1px solid #333;
+  border-bottom: 1px solid #333;
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: .25s ease;
+}
+
+.category-marketplace-card:hover {
+  background: #e31b23;
+}
+
+.category-number {
+  color: #777;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.category-marketplace-card:hover
+.category-number {
+  color: rgba(255, 255, 255, .7);
+}
+
+.category-marketplace-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.category-marketplace-card p {
+  color: #888;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.category-marketplace-card:hover p {
+  color: rgba(255, 255, 255, .8);
+}
+
+.category-marketplace-card > strong {
+  font-size: 20px;
+}
+
+.category-explorer-action {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.show-all-category-btn {
+  padding: 13px 22px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.show-all-category-btn:hover {
+  border-color: #e31b23;
+  background: #e31b23;
+}
+
+
+/* ==========================================================
+   RESPONSIVE NAVIGATION
+========================================================== */
+
+@media (max-width: 1100px) {
+
+  .mega-menu {
+    width: min(
+      760px,
+      calc(100vw - 30px)
+    );
+  }
+
+  .mega-menu-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .category-marketplace-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 800px) {
+
+  .nav-menu {
+    align-items: stretch;
+  }
+
+  .nav-dropdown {
+    width: 100%;
+  }
+
+  .nav-dropdown-toggle {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .mega-menu,
+  .nav-simple-dropdown {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    transform: none;
+    box-shadow: none;
+    border-radius: 10px;
+    margin-top: 5px;
+    display: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .nav-dropdown.open .mega-menu,
+  .nav-dropdown.open
+  .nav-simple-dropdown {
+    display: block;
+    transform: none;
+  }
+
+  .mega-menu-grid {
+    grid-template-columns: 1fr;
+    max-height: 55vh;
+    overflow-y: auto;
+  }
+
+  .category-heading {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 560px) {
+
+  .category-marketplace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-marketplace-card {
+    min-height: 175px;
+  }
+
+}

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Pembayaran dan konfirmasi akses peluang TokoPeluang."
+  >
+
+  <title>
+    Pembayaran QRIS | TokoPeluang
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="css/payment.css"
+  >
+</head>
+
+<body class="payment-page">
+
+  <header class="payment-header">
+
+    <div class="payment-header-inner">
+
+      <a
+        href="index.html"
+        class="payment-brand"
+      >
+        <strong>TokoPeluang</strong>
+        <span>
+          by Investment Technology Indonesia
+        </span>
+      </a>
+
+      <a
+        href="index.html#peluang"
+        class="payment-back"
+      >
+        ← Kembali ke Peluang
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <main class="payment-main">
+
+    <section class="payment-intro">
+
+      <span class="payment-eyebrow">
+        AKSES PELUANG
+      </span>
+
+      <h1>
+        Konfirmasi Pembayaran
+      </h1>
+
+      <p>
+        Selesaikan pembayaran melalui QRIS,
+        lalu kirim bukti pembayaran untuk
+        diverifikasi oleh pengelola TokoPeluang.
+      </p>
+
+    </section>
+
+
+    <section class="payment-layout">
+
+      <!-- DETAIL PELUANG -->
+
+      <div class="payment-content">
+
+        <div class="payment-card">
+
+          <div class="payment-card-label">
+            PELUANG YANG DIPILIH
+          </div>
+
+          <h2 id="selectedOpportunityTitle">
+            Akses Peluang TokoPeluang
+          </h2>
+
+          <div class="selected-opportunity-meta">
+
+            <span id="selectedOpportunityCategory">
+              Peluang Bisnis
+            </span>
+
+            <span id="selectedOpportunityLocation">
+              Indonesia
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <div class="payment-card">
+
+          <div class="payment-card-label">
+            DATA PEMOHON
+          </div>
+
+          <h2>
+            Konfirmasi Pembayaran
+          </h2>
+
+          <form
+            id="paymentConfirmationForm"
+            class="payment-form"
+          >
+
+            <input
+              type="hidden"
+              id="opportunityId"
+            >
+
+            <input
+              type="hidden"
+              id="opportunityTitle"
+            >
+
+
+            <div class="payment-field">
+
+              <label for="customerName">
+                Nama Lengkap
+              </label>
+
+              <input
+                type="text"
+                id="customerName"
+                placeholder="Nama lengkap Anda"
+                required
+              >
+
+            </div>
+
+
+            <div class="payment-field">
+
+              <label for="customerEmail">
+                Email
+              </label>
+
+              <input
+                type="email"
+                id="customerEmail"
+                placeholder="email@contoh.com"
+                required
+              >
+
+            </div>
+
+
+            <div class="payment-field">
+
+              <label for="customerPhone">
+                Nomor Kontak
+              </label>
+
+              <input
+                type="tel"
+                id="customerPhone"
+                placeholder="08xxxxxxxxxx"
+                required
+              >
+
+            </div>
+
+
+            <div class="payment-field">
+
+              <label for="paymentAmount">
+                Nominal Pembayaran
+              </label>
+
+              <div class="amount-input-wrap">
+
+                <span>Rp</span>
+
+                <input
+                  type="number"
+                  id="paymentAmount"
+                  min="1"
+                  placeholder="Masukkan nominal"
+                  required
+                >
+
+              </div>
+
+              <small>
+                Masukkan nominal sesuai biaya akses
+                atau informasi yang diberikan.
+              </small>
+
+            </div>
+
+
+            <div class="payment-field">
+
+              <label for="paymentProof">
+                Bukti Pembayaran
+              </label>
+
+              <label
+                for="paymentProof"
+                class="upload-proof-box"
+              >
+
+                <strong>
+                  Upload Bukti Pembayaran
+                </strong>
+
+                <span>
+                  JPG, PNG, atau WEBP
+                </span>
+
+              </label>
+
+              <input
+                type="file"
+                id="paymentProof"
+                accept="image/jpeg,image/png,image/webp"
+                required
+                hidden
+              >
+
+              <div
+                id="selectedFileName"
+                class="selected-file-name"
+              ></div>
+
+            </div>
+
+
+            <label class="payment-agreement">
+
+              <input
+                type="checkbox"
+                id="paymentAgreement"
+                required
+              >
+
+              <span>
+                Saya menyatakan bahwa data dan bukti
+                pembayaran yang dikirim adalah benar.
+              </span>
+
+            </label>
+
+
+            <button
+              type="submit"
+              id="submitPaymentButton"
+              class="payment-submit"
+            >
+              Kirim Konfirmasi Pembayaran
+            </button>
+
+
+            <div
+              id="paymentMessage"
+              class="payment-message"
+              aria-live="polite"
+            ></div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+
+      <!-- QRIS -->
+
+      <aside class="qris-sidebar">
+
+        <div class="qris-card">
+
+          <div class="payment-card-label">
+            PEMBAYARAN QRIS
+          </div>
+
+          <h2>
+            Scan untuk Membayar
+          </h2>
+
+          <p>
+            Gunakan aplikasi pembayaran yang
+            mendukung QRIS.
+          </p>
+
+
+          <div class="qris-image-wrap">
+
+            <img
+              src="assets/payment/qris-tokopeluang.png"
+              alt="QRIS Merchant untuk pembayaran TokoPeluang"
+              class="qris-image"
+            >
+
+          </div>
+
+
+          <div class="merchant-information">
+
+            <span>
+              Merchant QRIS
+            </span>
+
+            <strong>
+              JASA KOMPUTER
+            </strong>
+
+          </div>
+
+
+          <div class="payment-verification">
+
+            <span>
+              VERIFIKASI PEMBAYARAN
+            </span>
+
+            <strong>
+              Alma
+            </strong>
+
+            <p>
+              Founder — Investment Technology Indonesia
+            </p>
+
+          </div>
+
+
+          <div class="payment-steps">
+
+            <div>
+              <span>01</span>
+              <p>Scan QRIS dan lakukan pembayaran.</p>
+            </div>
+
+            <div>
+              <span>02</span>
+              <p>Simpan bukti pembayaran.</p>
+            </div>
+
+            <div>
+              <span>03</span>
+              <p>Upload bukti melalui formulir.</p>
+            </div>
+
+            <div>
+              <span>04</span>
+              <p>Tunggu verifikasi dari pengelola.</p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </section>
+
+  </main>
+
+
+  <footer class="payment-footer">
+
+    <strong>
+      TokoPeluang
+    </strong>
+
+    <p>
+      Platform peluang oleh Investment Technology Indonesia.
+    </p>
+
+    <div>
+      Email:
+      alma.budsteddy88@gmail.com
+      <br>
+      SMS:
+      085283397198
+    </div>
+
+  </footer>
+
+
+  <script src="js/payment.js"></script>
+
+</body>
+
+</html>

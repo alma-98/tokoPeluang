@@ -145,3 +145,108 @@ async function loadPublicOpportunities() {
 
 
 loadPublicOpportunities();
+
+
+/* ==========================================================
+   TOKOPELUANG PAYMENT LINK
+   Mengubah tombol Ambil Peluang pada kartu Supabase
+   menjadi link ke halaman pembayaran.
+========================================================== */
+
+document.addEventListener(
+  "click",
+  function (event) {
+
+    const trigger =
+      event.target.closest(
+        ".opportunity-card a, " +
+        ".opportunity-card button"
+      );
+
+    if (!trigger) {
+      return;
+    }
+
+
+    const text =
+      trigger.textContent
+        .trim()
+        .toLowerCase();
+
+
+    if (
+      !text.includes(
+        "ambil peluang"
+      )
+    ) {
+      return;
+    }
+
+
+    const card =
+      trigger.closest(
+        ".opportunity-card"
+      );
+
+    if (!card) {
+      return;
+    }
+
+
+    event.preventDefault();
+
+
+    const titleElement =
+      card.querySelector(
+        "h2, h3"
+      );
+
+    const locationElement =
+      Array
+        .from(
+          card.querySelectorAll(
+            "p, span"
+          )
+        )
+        .find(
+          element =>
+            element.textContent
+              .includes("📍")
+        );
+
+
+    const params =
+      new URLSearchParams({
+
+        id:
+          card.dataset.id ||
+          "",
+
+        title:
+          titleElement
+            ? titleElement
+                .textContent
+                .trim()
+            : "Akses Peluang",
+
+        category:
+          card.dataset.category ||
+          "Peluang Bisnis",
+
+        location:
+          locationElement
+            ? locationElement
+                .textContent
+                .replace("📍", "")
+                .trim()
+            : "Indonesia"
+
+      });
+
+
+    window.location.href =
+      "pembayaran.html?" +
+      params.toString();
+
+  }
+);

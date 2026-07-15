@@ -1,430 +1,285 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | TokoPeluang</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/admin.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Dashboard Admin | TokoPeluang
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="css/admin.css"
+  >
 </head>
-<body class="admin-body">
 
-<div id="adminLogin" class="admin-login">
-  <div class="login-card">
-    <a href="index.html" class="logo">Toko<span>Peluang</span></a>
-
-    <span class="admin-label">ADMIN DASHBOARD</span>
-    <h1>Kelola Peluang Bisnis</h1>
-    <p>Masukkan PIN demo untuk membuka dashboard.</p>
-
-    <form id="loginForm">
-
-      <div class="form-group">
-        <label>Email Admin</label>
-        <input
-          type="email"
-          id="adminEmail"
-          placeholder="Email admin"
-          autocomplete="email"
-          required
-        >
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <input
-          type="password"
-          id="adminPassword"
-          placeholder="Password Supabase"
-          autocomplete="current-password"
-          required
-        >
-      </div>
-
-      <button
-        type="submit"
-        id="adminLoginButton"
-        class="btn btn-primary admin-full-btn"
-      >
-        Masuk Dashboard
-      </button>
-
-      <p id="loginError" class="login-error"></p>
-
-    </form>
-
-    <p class="demo-pin">
-      Login menggunakan akun Admin TokoPeluang.
-    </p>
-  </div>
-</div>
-
-<div id="adminApp" class="admin-app hidden">
+<body class="admin-dashboard-page">
 
   <aside class="admin-sidebar">
-    <div>
-      <a href="index.html" class="logo admin-logo">
-        Toko<span>Peluang</span>
-      </a>
 
-      <span class="sidebar-small">ADMIN PANEL</span>
+    <a
+      href="index.html"
+      class="admin-sidebar-brand"
+    >
+      Toko<span>Peluang</span>
+    </a>
+
+    <div class="admin-sidebar-subtitle">
+      ADMIN DASHBOARD
     </div>
 
-    <nav class="admin-nav">
-      <button class="admin-nav-item active" data-section="dashboard">
-        <span>▦</span>
-        Dashboard
+    <nav class="admin-navigation">
+
+      <button
+        class="admin-nav-item active"
+        data-filter="all"
+      >
+        Semua Pembayaran
       </button>
 
-      <button class="admin-nav-item" data-section="opportunities">
-        <span>◎</span>
-        Kelola Peluang
+      <button
+        class="admin-nav-item"
+        data-filter="pending"
+      >
+        Menunggu Verifikasi
       </button>
 
-      <button class="admin-nav-item" data-section="add">
-        <span>＋</span>
-        Tambah Peluang
+      <button
+        class="admin-nav-item"
+        data-filter="approved"
+      >
+        Disetujui
       </button>
 
-      <a href="index.html" class="admin-nav-item">
-        <span>↗</span>
-        Lihat Website
-      </a>
+      <button
+        class="admin-nav-item"
+        data-filter="rejected"
+      >
+        Ditolak
+      </button>
+
     </nav>
 
-    <button id="logoutBtn" class="logout-btn">
-      Keluar Admin
-    </button>
+    <div class="admin-sidebar-footer">
+
+      <a href="index.html">
+        ← Kembali ke Website
+      </a>
+
+      <button id="adminLogoutButton">
+        Keluar
+      </button>
+
+    </div>
+
   </aside>
+
 
   <main class="admin-main">
 
     <header class="admin-topbar">
+
       <div>
-        <span class="admin-eyebrow">TOKOPELUANG</span>
-        <h1 id="pageTitle">Dashboard</h1>
+
+        <div class="admin-label">
+          TOKOPELUANG
+        </div>
+
+        <h1>
+          Verifikasi Pembayaran
+        </h1>
+
       </div>
 
-      <button id="mobileSidebarBtn" class="mobile-sidebar-btn">
-        ☰
+      <button
+        id="adminRefreshButton"
+        class="admin-secondary-button"
+      >
+        Refresh Data
       </button>
 
-      <div class="admin-profile">
-        <div class="admin-avatar">A</div>
-        <div>
-          <strong>Alma</strong>
-          <small>Administrator</small>
-        </div>
-      </div>
     </header>
 
-    <section id="dashboardSection" class="admin-section active-section">
 
-      <div class="admin-welcome">
+    <section class="admin-stat-grid">
+
+      <article class="admin-stat-card">
+
+        <span>
+          Total
+        </span>
+
+        <strong id="totalPaymentCount">
+          0
+        </strong>
+
+      </article>
+
+
+      <article class="admin-stat-card pending">
+
+        <span>
+          Menunggu
+        </span>
+
+        <strong id="pendingPaymentCount">
+          0
+        </strong>
+
+      </article>
+
+
+      <article class="admin-stat-card approved">
+
+        <span>
+          Disetujui
+        </span>
+
+        <strong id="approvedPaymentCount">
+          0
+        </strong>
+
+      </article>
+
+
+      <article class="admin-stat-card rejected">
+
+        <span>
+          Ditolak
+        </span>
+
+        <strong id="rejectedPaymentCount">
+          0
+        </strong>
+
+      </article>
+
+    </section>
+
+
+    <section class="admin-content-card">
+
+      <div class="admin-content-header">
+
         <div>
-          <span>INVESTMENT TECHNOLOGY INDONESIA</span>
-          <h2>Selamat datang, Alma.</h2>
-          <p>
-            Kelola peluang bisnis, proyek, kebutuhan vendor,
-            dan pengadaan dari satu dashboard.
-          </p>
-        </div>
 
-        <button class="btn btn-primary go-add-btn">
-          + Tambah Peluang
-        </button>
-      </div>
+          <div class="admin-label">
+            PAYMENT REQUESTS
+          </div>
 
-      <div class="admin-stats">
+          <h2>
+            Daftar Konfirmasi Pembayaran
+          </h2>
 
-        <div class="stat-card">
-          <span>Total Peluang</span>
-          <strong id="totalOpportunities">0</strong>
-          <small>Semua data peluang</small>
-        </div>
-
-        <div class="stat-card">
-          <span>Peluang Aktif</span>
-          <strong id="activeOpportunities">0</strong>
-          <small>Sedang terbuka</small>
-        </div>
-
-        <div class="stat-card">
-          <span>Peluang Ditutup</span>
-          <strong id="closedOpportunities">0</strong>
-          <small>Tidak menerima penawaran</small>
-        </div>
-
-        <div class="stat-card">
-          <span>Kategori</span>
-          <strong id="totalCategories">0</strong>
-          <small>Kategori aktif</small>
         </div>
 
       </div>
 
-      <div class="admin-panel">
-        <div class="panel-heading">
-          <div>
-            <span>DATA TERBARU</span>
-            <h2>Peluang Terbaru</h2>
-          </div>
 
-          <button class="text-button go-opportunities-btn">
-            Lihat Semua →
-          </button>
-        </div>
-
-        <div id="recentOpportunities"></div>
+      <div
+        id="adminLoading"
+        class="admin-loading"
+      >
+        Memuat pembayaran...
       </div>
 
-    </section>
 
-    <section id="opportunitiesSection" class="admin-section">
+      <div
+        id="paymentList"
+        class="admin-payment-list"
+      ></div>
 
-      <div class="admin-panel">
-        <div class="panel-heading responsive-heading">
-          <div>
-            <span>MANAJEMEN DATA</span>
-            <h2>Semua Peluang</h2>
-          </div>
 
-          <button class="btn btn-primary go-add-btn">
-            + Tambah Peluang
-          </button>
-        </div>
-
-        <div class="admin-filter">
-          <input
-            type="text"
-            id="adminSearch"
-            placeholder="Cari judul, kategori, lokasi..."
-          >
-
-          <select id="adminStatusFilter">
-            <option value="all">Semua Status</option>
-            <option value="active">Aktif</option>
-            <option value="closed">Ditutup</option>
-          </select>
-        </div>
-
-        <div id="opportunityTable"></div>
-      </div>
-
-    </section>
-
-    <section id="revenueSection" class="admin-section">
-
-      <div class="admin-welcome revenue-welcome">
-        <div>
-          <span>PENDAPATAN TOKOPELUANG</span>
-          <h2>Dashboard Keuangan</h2>
-          <p>
-            Pantau transaksi, pendapatan platform, dan status settlement.
-          </p>
-        </div>
-      </div>
-
-      <div class="admin-stats">
-        <div class="stat-card">
-          <span>Total Transaksi Dibayar</span>
-          <strong id="revenuePaidCount">0</strong>
-          <small>Transaksi berhasil</small>
-        </div>
-
-        <div class="stat-card">
-          <span>Nilai Transaksi</span>
-          <strong id="revenueGross">Rp0</strong>
-          <small>Total pembayaran berhasil</small>
-        </div>
-
-        <div class="stat-card">
-          <span>Pendapatan Platform</span>
-          <strong id="revenuePlatform">Rp0</strong>
-          <small>Keuntungan TokoPeluang</small>
-        </div>
-
-        <div class="stat-card">
-          <span>Sudah Settlement</span>
-          <strong id="revenueSettled">Rp0</strong>
-          <small>Dana yang sudah diselesaikan</small>
-        </div>
-      </div>
-
-      <div class="admin-panel">
-        <div class="panel-heading">
-          <div>
-            <span>REKENING SETTLEMENT</span>
-            <h2>Tujuan Pencairan Dana</h2>
-          </div>
-        </div>
-
-        <div class="settlement-account">
-          <div>
-            <small>Bank</small>
-            <strong>Bank Mandiri</strong>
-          </div>
-          <div>
-            <small>Pemilik</small>
-            <strong>Alma</strong>
-          </div>
-          <div>
-            <small>Nomor Rekening</small>
-            <strong>********8281</strong>
-          </div>
-        </div>
-
-        <p class="security-note">
-          Nomor rekening lengkap tidak disimpan di source code publik.
-          Settlement otomatis akan dikonfigurasi melalui payment gateway.
-        </p>
-      </div>
-
-      <div class="admin-panel revenue-table-panel">
-        <div class="panel-heading">
-          <div>
-            <span>RIWAYAT</span>
-            <h2>Transaksi Terbaru</h2>
-          </div>
-
-          <button
-            type="button"
-            id="refreshRevenueBtn"
-            class="btn admin-secondary-btn"
-          >
-            Refresh
-          </button>
-        </div>
-
-        <div id="revenueTable">
-          <div class="empty-state">
-            Memuat transaksi...
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <section id="addSection" class="admin-section">
-
-      <div class="admin-panel form-panel">
-
-        <div class="panel-heading">
-          <div>
-            <span id="formModeLabel">PELUANG BARU</span>
-            <h2 id="formTitle">Tambah Peluang</h2>
-          </div>
-        </div>
-
-        <form id="adminOpportunityForm">
-
-          <input type="hidden" id="editOpportunityId">
-
-          <div class="admin-form-grid">
-
-            <div class="form-group full-grid">
-              <label>Judul Peluang</label>
-              <input
-                type="text"
-                id="adminTitle"
-                placeholder="Contoh: Mencari Vendor Instalasi CCTV"
-                required
-              >
-            </div>
-
-            <div class="form-group">
-              <label>Kategori</label>
-              <select id="adminCategory" required>
-                <option value="">Pilih kategori</option>
-                <option>IT & Software</option>
-                <option>CCTV & Security</option>
-                <option>Otomotif</option>
-                <option>Konstruksi</option>
-                <option>Pengadaan Barang</option>
-                <option>Digital Marketing</option>
-                <option>Desain</option>
-                <option>Event</option>
-                <option>Catering</option>
-                <option>Logistik</option>
-                <option>UMKM</option>
-                <option>Lainnya</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Lokasi</label>
-              <input
-                type="text"
-                id="adminLocation"
-                placeholder="Contoh: Jawa Barat"
-                required
-              >
-            </div>
-
-            <div class="form-group">
-              <label>Estimasi Anggaran</label>
-              <input
-                type="text"
-                id="adminBudget"
-                placeholder="Contoh: Rp10.000.000"
-              >
-            </div>
-
-            <div class="form-group">
-              <label>Status</label>
-              <select id="adminStatus" required>
-                <option value="active">Aktif</option>
-                <option value="closed">Ditutup</option>
-              </select>
-            </div>
-
-            <div class="form-group full-grid">
-              <label>Deskripsi Singkat</label>
-              <textarea
-                id="adminDescription"
-                rows="5"
-                placeholder="Jelaskan kebutuhan atau peluang..."
-                required
-              ></textarea>
-            </div>
-
-            <div class="form-group full-grid">
-              <label>Persyaratan</label>
-              <textarea
-                id="adminRequirements"
-                rows="6"
-                placeholder="Pisahkan setiap persyaratan dengan baris baru."
-              ></textarea>
-            </div>
-
-          </div>
-
-          <div class="admin-form-actions">
-            <button type="submit" class="btn btn-primary">
-              Simpan Peluang
-            </button>
-
-            <button
-              type="button"
-              id="cancelEditBtn"
-              class="btn admin-secondary-btn hidden"
-            >
-              Batal Edit
-            </button>
-          </div>
-
-        </form>
-
+      <div
+        id="adminEmptyState"
+        class="admin-empty-state"
+        hidden
+      >
+        Belum ada data pembayaran.
       </div>
 
     </section>
 
   </main>
 
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/admin.js"></script>
+  <!-- MODAL BUKTI PEMBAYARAN -->
+
+  <div
+    id="paymentModal"
+    class="admin-modal"
+    hidden
+  >
+
+    <div class="admin-modal-backdrop"></div>
+
+    <div class="admin-modal-card">
+
+      <button
+        id="closePaymentModal"
+        class="admin-modal-close"
+      >
+        ×
+      </button>
+
+      <div class="admin-label">
+        BUKTI PEMBAYARAN
+      </div>
+
+      <h2 id="modalOpportunityTitle">
+        Detail Pembayaran
+      </h2>
+
+      <div
+        id="modalPaymentDetail"
+        class="admin-modal-detail"
+      ></div>
+
+      <div class="admin-proof-container">
+
+        <img
+          id="modalPaymentProof"
+          alt="Bukti pembayaran"
+        >
+
+      </div>
+
+      <div class="admin-modal-actions">
+
+        <button
+          id="rejectPaymentButton"
+          class="admin-reject-button"
+        >
+          Tolak
+        </button>
+
+        <button
+          id="approvePaymentButton"
+          class="admin-approve-button"
+        >
+          Setujui Pembayaran
+        </button>
+
+      </div>
+
+      <div
+        id="modalMessage"
+        class="admin-message"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <script src="js/admin.js"></script>
+
 </body>
+
 </html>

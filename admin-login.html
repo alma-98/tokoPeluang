@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Admin Login | TokoPeluang</title>
+
+  <link
+    rel="stylesheet"
+    href="css/admin.css"
+  >
+</head>
+
+<body class="admin-login-page">
+
+  <main class="admin-login-wrapper">
+
+    <section class="admin-login-card">
+
+      <a
+        href="index.html"
+        class="admin-brand"
+      >
+        Toko<span>Peluang</span>
+      </a>
+
+      <div class="admin-label">
+        ADMINISTRATION
+      </div>
+
+      <h1>
+        Masuk Dashboard
+      </h1>
+
+      <p class="admin-login-description">
+        Akses khusus pengelola TokoPeluang untuk
+        melakukan verifikasi pembayaran.
+      </p>
+
+      <form id="adminLoginForm">
+
+        <div class="admin-field">
+
+          <label for="adminEmail">
+            Email Admin
+          </label>
+
+          <input
+            type="email"
+            id="adminEmail"
+            autocomplete="email"
+            placeholder="Email admin"
+            required
+          >
+
+        </div>
+
+
+        <div class="admin-field">
+
+          <label for="adminPassword">
+            Password
+          </label>
+
+          <input
+            type="password"
+            id="adminPassword"
+            autocomplete="current-password"
+            placeholder="Password"
+            required
+          >
+
+        </div>
+
+
+        <button
+          type="submit"
+          id="adminLoginButton"
+          class="admin-primary-button"
+        >
+          Masuk Dashboard
+        </button>
+
+
+        <div
+          id="adminLoginMessage"
+          class="admin-message"
+        ></div>
+
+      </form>
+
+
+      <div class="admin-security-note">
+        🔒 Dashboard hanya dapat diakses oleh
+        akun admin yang terdaftar.
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="js/admin-login.js"></script>
+
+</body>
+
+</html>

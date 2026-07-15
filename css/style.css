@@ -1285,3 +1285,122 @@ footer {
   }
 
 }
+
+
+/* ==========================================================
+   UMKM SUBCATEGORY DROPDOWN
+========================================================== */
+
+.opportunity-filter-dropdown {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.opportunity-filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.opportunity-filter-toggle span {
+  font-size: 14px;
+  transition: transform .2s ease;
+}
+
+.opportunity-filter-dropdown.open
+.opportunity-filter-toggle span {
+  transform: rotate(180deg);
+}
+
+.opportunity-filter-menu {
+  position: absolute;
+  z-index: 500;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 560px;
+  max-height: 440px;
+  overflow-y: auto;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #e7e7e7;
+  border-radius: 16px;
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, .16);
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 5px;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: .2s ease;
+}
+
+.opportunity-filter-dropdown.open
+.opportunity-filter-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.filter-menu-heading {
+  grid-column: 1 / -1;
+  padding: 8px 8px 14px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-menu-heading span {
+  display: block;
+  color: #e31b23;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  margin-bottom: 4px;
+}
+
+.filter-menu-heading strong {
+  font-size: 16px;
+}
+
+.opportunity-filter-menu button {
+  border: 0;
+  background: transparent;
+  color: #333;
+  padding: 11px 12px;
+  border-radius: 8px;
+  text-align: left;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.opportunity-filter-menu button:hover {
+  background: #f7f7f7;
+  color: #e31b23;
+}
+
+.opportunity-filter-menu button.active {
+  background: #e31b23;
+  color: #fff;
+}
+
+@media (max-width: 650px) {
+
+  .opportunity-filter-menu {
+    position: fixed;
+    left: 15px;
+    right: 15px;
+    top: auto;
+    bottom: 20px;
+    width: auto;
+    max-height: 65vh;
+    grid-template-columns: 1fr;
+  }
+
+}

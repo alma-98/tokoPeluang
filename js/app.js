@@ -494,3 +494,171 @@ if (opportunityCategoryFilter) {
     );
 
 }
+
+
+/* ==========================================================
+   UMKM SUBCATEGORY FILTER
+========================================================== */
+
+const opportunityFilterDropdowns =
+  document.querySelectorAll(
+    ".opportunity-filter-dropdown"
+  );
+
+opportunityFilterDropdowns.forEach(
+  dropdown => {
+
+    const toggle =
+      dropdown.querySelector(
+        ".opportunity-filter-toggle"
+      );
+
+    const menuButtons =
+      dropdown.querySelectorAll(
+        ".opportunity-filter-menu [data-type-filter]"
+      );
+
+    if (!toggle) return;
+
+    toggle.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        const isOpen =
+          dropdown.classList
+            .contains("open");
+
+        opportunityFilterDropdowns
+          .forEach(item =>
+            item.classList.remove("open")
+          );
+
+        if (!isOpen) {
+          dropdown.classList.add("open");
+
+          toggle.setAttribute(
+            "aria-expanded",
+            "true"
+          );
+        }
+
+      }
+    );
+
+    menuButtons.forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          function() {
+
+            const selectedType =
+              this.dataset.typeFilter;
+
+            activeOpportunityType =
+              selectedType;
+
+            document
+              .querySelectorAll(
+                ".opportunity-type-btn"
+              )
+              .forEach(item =>
+                item.classList.remove(
+                  "active"
+                )
+              );
+
+            menuButtons.forEach(
+              item =>
+                item.classList.remove(
+                  "active"
+                )
+            );
+
+            this.classList.add(
+              "active"
+            );
+
+            toggle.classList.add(
+              "active"
+            );
+
+            if (
+              selectedType === "umkm"
+            ) {
+
+              toggle.childNodes[0]
+                .textContent =
+                "UMKM ";
+
+            } else {
+
+              const selectedLabel =
+                this.textContent.trim();
+
+              toggle.childNodes[0]
+                .textContent =
+                selectedLabel + " ";
+
+            }
+
+            dropdown.classList.remove(
+              "open"
+            );
+
+            toggle.setAttribute(
+              "aria-expanded",
+              "false"
+            );
+
+            applyOpportunityTypeFilter();
+
+          }
+        );
+
+      }
+    );
+
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      !event.target.closest(
+        ".opportunity-filter-dropdown"
+      )
+    ) {
+
+      opportunityFilterDropdowns
+        .forEach(dropdown => {
+
+          dropdown.classList.remove(
+            "open"
+          );
+
+          const toggle =
+            dropdown.querySelector(
+              ".opportunity-filter-toggle"
+            );
+
+          if (toggle) {
+
+            toggle.setAttribute(
+              "aria-expanded",
+              "false"
+            );
+
+          }
+
+        });
+
+    }
+
+  }
+);

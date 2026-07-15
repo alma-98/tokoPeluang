@@ -5,99 +5,69 @@ const SUPABASE_KEY =
   "sb_publishable_Kp9btF03oqQ9hLCMV-yBVg_JYUCKyjQ";
 
 
-function formatRupiah(
-  value
-) {
+function formatRupiah(value) {
 
-  return new Intl
-    .NumberFormat(
-      "id-ID",
-      {
-        style:
-          "currency",
-
-        currency:
-          "IDR",
-
-        maximumFractionDigits:
-          0
-      }
-    )
-    .format(
-      Number(
-        value || 0
-      )
-    );
+  return new Intl.NumberFormat(
+    "id-ID",
+    {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0
+    }
+  ).format(
+    Number(value || 0)
+  );
 
 }
 
 
-function formatDate(
-  value
-) {
+function formatDate(value) {
 
   if (!value) {
     return "-";
   }
 
-
-  return new Intl
-    .DateTimeFormat(
-      "id-ID",
-      {
-        dateStyle:
-          "medium",
-
-        timeStyle:
-          "short"
-      }
-    )
-    .format(
-      new Date(
-        value
-      )
-    );
+  return new Intl.DateTimeFormat(
+    "id-ID",
+    {
+      dateStyle: "medium",
+      timeStyle: "short"
+    }
+  ).format(
+    new Date(value)
+  );
 
 }
 
 
 function resetStatusInformation() {
 
-  document
-    .getElementById(
-      "pendingInformation"
-    )
-    .hidden =
-      true;
+  [
+    "pendingInformation",
+    "approvedInformation",
+    "rejectedInformation"
+  ].forEach(
+    id => {
 
+      const element =
+        document.getElementById(id);
 
-  document
-    .getElementById(
-      "approvedInformation"
-    )
-    .hidden =
-      true;
+      if (element) {
+        element.hidden = true;
+      }
 
-
-  document
-    .getElementById(
-      "rejectedInformation"
-    )
-    .hidden =
-      true;
+    }
+  );
 
 }
 
 
-function showResult(
-  payment
-) {
+function showResult(payment) {
 
   const result =
     document.getElementById(
       "statusResult"
     );
-
 
   const badge =
     document.getElementById(
@@ -116,7 +86,7 @@ function showResult(
     `status-badge ${payment.status}`;
 
 
-  const statusLabels = {
+  const labels = {
 
     pending:
       "Menunggu Verifikasi",
@@ -131,9 +101,7 @@ function showResult(
 
 
   badge.textContent =
-    statusLabels[
-      payment.status
-    ] ||
+    labels[payment.status] ||
     payment.status;
 
 
@@ -142,7 +110,8 @@ function showResult(
       "resultOpportunityTitle"
     )
     .textContent =
-      payment.opportunity_title;
+      payment.opportunity_title ||
+      "Peluang TokoPeluang";
 
 
   document
@@ -150,7 +119,8 @@ function showResult(
       "resultName"
     )
     .textContent =
-      payment.customer_name;
+      payment.customer_name ||
+      "-";
 
 
   document
@@ -201,31 +171,36 @@ function showResult(
         false;
 
 
-    document
-      .getElementById(
+    const accessContent =
+      document.getElementById(
         "approvedAccessContent"
-      )
-      .innerHTML = `
+      );
 
-        <strong>
-          Permintaan akses Anda telah disetujui.
-        </strong>
 
-        <p>
-          Untuk proses lanjutan dan informasi peluang,
-          hubungi pengelola TokoPeluang melalui email.
-        </p>
+    accessContent.innerHTML = `
 
-        <a
-          href="mailto:alma.budsteddy88@gmail.com?subject=${encodeURIComponent(
-            "Akses Peluang TokoPeluang - " +
-            payment.opportunity_title
-          )}"
-        >
-          Hubungi Pengelola
-        </a>
+      <strong>
+        Pembayaran telah diverifikasi.
+      </strong>
 
-      `;
+      <p>
+        Permintaan akses peluang Anda telah
+        disetujui oleh pengelola TokoPeluang.
+      </p>
+
+      <a
+        href="mailto:alma.budsteddy88@gmail.com?subject=${encodeURIComponent(
+          "Akses Peluang TokoPeluang - " +
+          (
+            payment.opportunity_title ||
+            "Peluang"
+          )
+        )}"
+      >
+        Hubungi Pengelola
+      </a>
+
+    `;
 
   }
 
@@ -246,11 +221,8 @@ function showResult(
 
 
   result.scrollIntoView({
-    behavior:
-      "smooth",
-
-    block:
-      "start"
+    behavior: "smooth",
+    block: "start"
   });
 
 }
@@ -261,50 +233,76 @@ async function checkPaymentStatus(
   email
 ) {
 
-  const query =
-    `${SUPABASE_URL}` +
-    `/rest/v1/opportunity_payments` +
-    `?id=eq.${encodeURIComponent(requestId)}` +
-    `&customer_email=eq.${encodeURIComponent(email)}` +
-    `&select=` +
-    [
-      "id",
-      "opportunity_title",
-      "customer_name",
-      "customer_email",
-      "amount",
-      "status",
-      "created_at",
-      "verified_at"
-    ].join(",");
-
-
   const response =
     await fetch(
-      query,
+      `${SUPABASE_URL}/rest/v1/rpc/check_payment_status`,
       {
+        method: "POST",
+
         headers: {
+
           "apikey":
             SUPABASE_KEY,
 
           "Authorization":
-            `Bearer ${SUPABASE_KEY}`
-        }
+            `Bearer ${SUPABASE_KEY}`,
+
+          "Content-Type":
+            "application/json"
+
+        },
+
+        body:
+          JSON.stringify({
+
+            p_request_id:
+              requestId,
+
+            p_email:
+              email
+
+          })
+
       }
     );
 
 
-  if (!response.ok) {
+  let data = null;
 
-    throw new Error(
-      "Status belum dapat diperiksa. Pastikan sistem akses publik sudah diaktifkan."
-    );
+
+  try {
+
+    data =
+      await response.json();
+
+  }
+
+  catch {
+
+    data =
+      null;
 
   }
 
 
-  const data =
-    await response.json();
+  if (!response.ok) {
+
+    if (
+      response.status === 400
+    ) {
+
+      throw new Error(
+        "ID permintaan tidak valid. Periksa kembali ID Anda."
+      );
+
+    }
+
+
+    throw new Error(
+      "Status belum dapat diperiksa. Silakan coba kembali."
+    );
+
+  }
 
 
   if (
@@ -313,7 +311,7 @@ async function checkPaymentStatus(
   ) {
 
     throw new Error(
-      "Permintaan tidak ditemukan. Periksa kembali ID permintaan dan email."
+      "Permintaan tidak ditemukan. Pastikan ID dan email sesuai."
     );
 
   }
@@ -346,6 +344,18 @@ document.addEventListener(
       );
 
 
+    const requestIdInput =
+      document.getElementById(
+        "requestId"
+      );
+
+
+    const requestEmailInput =
+      document.getElementById(
+        "requestEmail"
+      );
+
+
     const params =
       new URLSearchParams(
         window.location.search
@@ -353,56 +363,46 @@ document.addEventListener(
 
 
     const idFromUrl =
-      params.get(
-        "id"
-      );
+      params.get("id");
 
 
     const emailFromUrl =
-      params.get(
-        "email"
-      );
+      params.get("email");
 
 
-    if (
-      idFromUrl
-    ) {
+    if (idFromUrl) {
 
-      document
-        .getElementById(
-          "requestId"
-        )
-        .value =
-          idFromUrl;
+      requestIdInput.value =
+        idFromUrl;
 
     }
 
 
-    if (
-      emailFromUrl
-    ) {
+    if (emailFromUrl) {
 
-      document
-        .getElementById(
-          "requestEmail"
-        )
-        .value =
-          emailFromUrl;
+      requestEmailInput.value =
+        emailFromUrl;
 
     }
 
 
     form.addEventListener(
       "submit",
-      async function (
-        event
-      ) {
+      async function (event) {
 
         event.preventDefault();
 
 
         message.textContent =
           "";
+
+
+        document
+          .getElementById(
+            "statusResult"
+          )
+          .hidden =
+            true;
 
 
         button.disabled =
@@ -418,17 +418,11 @@ document.addEventListener(
           const payment =
             await checkPaymentStatus(
 
-              document
-                .getElementById(
-                  "requestId"
-                )
+              requestIdInput
                 .value
                 .trim(),
 
-              document
-                .getElementById(
-                  "requestEmail"
-                )
+              requestEmailInput
                 .value
                 .trim()
 
@@ -441,17 +435,7 @@ document.addEventListener(
 
         }
 
-        catch (
-          error
-        ) {
-
-          document
-            .getElementById(
-              "statusResult"
-            )
-            .hidden =
-              true;
-
+        catch (error) {
 
           message.textContent =
             error.message;

@@ -857,3 +857,113 @@
   }
 
 }
+
+
+/* ==========================================================
+   FINAL QRIS FIX
+   QR image sudah berupa QR code saja.
+   Jangan crop, jangan zoom, jangan geser.
+========================================================== */
+
+.qris-image-wrap {
+  position: relative !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: min(100%, 360px) !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+
+  margin: 24px auto !important;
+
+  padding: 16px !important;
+
+  overflow: visible !important;
+
+  background: #ffffff !important;
+
+  border: 1px solid #eeeeee !important;
+  border-radius: 18px !important;
+
+  box-shadow:
+    0 12px 35px
+    rgba(0, 0, 0, 0.08) !important;
+}
+
+
+/* QR CODE */
+
+.qris-image-wrap .qris-image,
+.qris-image {
+  position: static !important;
+
+  display: block !important;
+
+  width: 100% !important;
+  max-width: 328px !important;
+
+  height: auto !important;
+  max-height: none !important;
+
+  margin: 0 auto !important;
+
+  padding: 0 !important;
+
+  transform: none !important;
+
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  border-radius: 0 !important;
+}
+
+
+/* HAPUS SEMUA OVERLAY CROP LAMA */
+
+.qris-image-wrap::before,
+.qris-image-wrap::after {
+  display: none !important;
+  content: none !important;
+}
+
+
+/* HAPUS IDENTITAS MERCHANT TAMBAHAN */
+
+.merchant-information {
+  display: none !important;
+}
+
+
+/* HAPUS PSEUDO ELEMENT LAMA */
+
+.qris-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 560px) {
+
+  .qris-image-wrap {
+    width: 100% !important;
+    max-width: 320px !important;
+
+    padding: 14px !important;
+  }
+
+  .qris-image-wrap .qris-image,
+  .qris-image {
+    width: 100% !important;
+    max-width: 292px !important;
+  }
+
+}

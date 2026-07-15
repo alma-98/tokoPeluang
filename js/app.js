@@ -350,3 +350,147 @@ if (showAllCategoriesBtn) {
     );
 
 }
+
+
+/* ==========================================================
+   OPPORTUNITY TYPE FILTER
+========================================================== */
+
+const opportunityTypeButtons =
+  document.querySelectorAll(
+    ".opportunity-type-btn"
+  );
+
+let activeOpportunityType =
+  "all";
+
+
+function applyOpportunityTypeFilter() {
+
+  const cards =
+    document.querySelectorAll(
+      ".opportunity-card"
+    );
+
+  const keyword =
+    document.getElementById(
+      "searchInput"
+    )
+      ?.value
+      .toLowerCase()
+      .trim() || "";
+
+  const category =
+    document.getElementById(
+      "categoryFilter"
+    )
+      ?.value || "all";
+
+  cards.forEach(card => {
+
+    const searchable = (
+      card.innerText +
+      " " +
+      (
+        card.dataset.category ||
+        ""
+      ) +
+      " " +
+      (
+        card.dataset.type ||
+        ""
+      )
+    ).toLowerCase();
+
+    const matchesKeyword =
+      searchable.includes(keyword);
+
+    const matchesCategory =
+      category === "all" ||
+      searchable.includes(
+        category.toLowerCase()
+      );
+
+    const matchesType =
+      activeOpportunityType === "all" ||
+      searchable.includes(
+        activeOpportunityType
+          .toLowerCase()
+      );
+
+    card.classList.toggle(
+      "hidden",
+      !(
+        matchesKeyword &&
+        matchesCategory &&
+        matchesType
+      )
+    );
+
+  });
+
+}
+
+
+opportunityTypeButtons.forEach(
+  button => {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        opportunityTypeButtons
+          .forEach(item => {
+
+            item.classList.remove(
+              "active"
+            );
+
+          });
+
+        this.classList.add(
+          "active"
+        );
+
+        activeOpportunityType =
+          this.dataset.typeFilter;
+
+        applyOpportunityTypeFilter();
+
+      }
+    );
+
+  }
+);
+
+
+const opportunitySearchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+if (opportunitySearchInput) {
+
+  opportunitySearchInput
+    .addEventListener(
+      "input",
+      applyOpportunityTypeFilter
+    );
+
+}
+
+
+const opportunityCategoryFilter =
+  document.getElementById(
+    "categoryFilter"
+  );
+
+if (opportunityCategoryFilter) {
+
+  opportunityCategoryFilter
+    .addEventListener(
+      "change",
+      applyOpportunityTypeFilter
+    );
+
+}

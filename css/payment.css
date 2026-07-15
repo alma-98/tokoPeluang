@@ -726,3 +726,134 @@
   }
 
 }
+
+
+/* ==========================================================
+   QRIS - QR CODE ONLY
+   Menampilkan area QR code saja.
+   File QRIS resmi tetap utuh dan tidak dimodifikasi.
+========================================================== */
+
+.qris-image-wrap {
+  position: relative !important;
+
+  width: min(100%, 340px) !important;
+
+  /*
+    Container berbentuk kotak untuk area QR.
+  */
+  aspect-ratio: 1 / 1 !important;
+
+  margin:
+    22px auto
+    18px !important;
+
+  padding: 0 !important;
+
+  overflow: hidden !important;
+
+  background:
+    #ffffff !important;
+
+  border:
+    1px solid
+    #eeeeee !important;
+
+  border-radius:
+    16px !important;
+
+  box-shadow:
+    0 10px 35px
+    rgba(0, 0, 0, .08) !important;
+}
+
+
+/*
+  Gambar QRIS resmi diperbesar di dalam viewport.
+  Hanya area QR code yang terlihat.
+*/
+
+.qris-image-wrap .qris-image {
+  position: absolute !important;
+
+  /*
+    Sesuaikan angka ini jika posisi file QRIS
+    sedikit berbeda.
+  */
+
+  width:
+    145% !important;
+
+  max-width:
+    none !important;
+
+  height:
+    auto !important;
+
+  left:
+    50% !important;
+
+  top:
+    47% !important;
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    ) !important;
+
+  margin:
+    0 !important;
+
+  border-radius:
+    0 !important;
+}
+
+
+/*
+  Matikan overlay lama.
+*/
+
+.qris-image-wrap::after {
+  display:
+    none !important;
+
+  content:
+    none !important;
+}
+
+
+/*
+  Jangan tampilkan identitas merchant tambahan.
+*/
+
+.merchant-information {
+  display:
+    none !important;
+}
+
+
+/*
+  Hilangkan tulisan tambahan yang dibuat
+  melalui pseudo element versi sebelumnya.
+*/
+
+.qris-card::after {
+  display:
+    none !important;
+
+  content:
+    none !important;
+}
+
+
+@media (
+  max-width: 560px
+) {
+
+  .qris-image-wrap {
+    width:
+      min(100%, 300px) !important;
+  }
+
+}

@@ -1077,3 +1077,75 @@
   }
 
 }
+
+/* ==========================================================
+   FINAL TOKOPELUANG QR
+   File sudah QR-only, tidak perlu crop atau zoom.
+========================================================== */
+
+.qris-image-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: min(100%, 350px) !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+
+  margin: 24px auto !important;
+  padding: 14px !important;
+
+  overflow: visible !important;
+
+  background: #ffffff !important;
+  border: 1px solid #eeeeee !important;
+  border-radius: 16px !important;
+}
+
+.qris-image-wrap .qris-image,
+.qris-image {
+  position: static !important;
+
+  display: block !important;
+
+  width: 100% !important;
+  max-width: 322px !important;
+  height: auto !important;
+
+  margin: 0 auto !important;
+  padding: 0 !important;
+
+  transform: none !important;
+
+  top: auto !important;
+  left: auto !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  border-radius: 0 !important;
+}
+
+.qris-image-wrap::before,
+.qris-image-wrap::after,
+.qris-card::after {
+  display: none !important;
+  content: none !important;
+}
+
+.merchant-information {
+  display: none !important;
+}
+
+@media (max-width: 560px) {
+  .qris-image-wrap {
+    width: min(100%, 310px) !important;
+    padding: 12px !important;
+  }
+
+  .qris-image-wrap .qris-image,
+  .qris-image {
+    max-width: 286px !important;
+  }
+}

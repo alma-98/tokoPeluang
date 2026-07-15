@@ -1,0 +1,619 @@
+:root {
+  --red: #e51b23;
+  --black: #111111;
+  --gray: #777777;
+  --light: #f5f5f5;
+  --border: #e7e7e7;
+  --green: #157347;
+  --orange: #a86500;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+
+  background:
+    #f6f6f6;
+
+  color:
+    var(--black);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.site-header {
+  background:
+    #ffffff;
+
+  border-bottom:
+    1px solid
+    var(--border);
+}
+
+.header-inner {
+  width:
+    min(
+      1180px,
+      calc(100% - 40px)
+    );
+
+  min-height:
+    78px;
+
+  margin:
+    0 auto;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    30px;
+}
+
+.brand {
+  color:
+    #111111;
+
+  font-size:
+    23px;
+
+  font-weight:
+    900;
+
+  text-decoration:
+    none;
+}
+
+.brand span {
+  color:
+    var(--red);
+}
+
+nav {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    25px;
+}
+
+nav a {
+  color:
+    #555555;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+
+  text-decoration:
+    none;
+}
+
+nav a.active {
+  color:
+    var(--red);
+}
+
+main {
+  width:
+    min(
+      1180px,
+      calc(100% - 40px)
+    );
+
+  margin:
+    0 auto;
+
+  padding:
+    75px 0
+    100px;
+}
+
+.status-hero {
+  max-width:
+    750px;
+
+  margin-bottom:
+    45px;
+}
+
+.eyebrow,
+.section-label {
+  color:
+    var(--red);
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
+
+  letter-spacing:
+    1.6px;
+}
+
+.status-hero h1 {
+  margin:
+    12px 0
+    18px;
+
+  font-size:
+    clamp(
+      45px,
+      7vw,
+      78px
+    );
+
+  line-height:
+    .95;
+
+  letter-spacing:
+    -4px;
+}
+
+.status-hero p {
+  max-width:
+    620px;
+
+  margin:
+    0;
+
+  color:
+    var(--gray);
+
+  font-size:
+    14px;
+
+  line-height:
+    1.8;
+}
+
+.status-container {
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(
+      300px,
+      430px
+    )
+    minmax(
+      0,
+      1fr
+    );
+
+  gap:
+    25px;
+
+  align-items:
+    start;
+}
+
+.status-card,
+.status-result {
+  padding:
+    30px;
+
+  background:
+    #ffffff;
+
+  border:
+    1px solid
+    var(--border);
+
+  border-radius:
+    18px;
+}
+
+.status-card h2,
+.status-result h2 {
+  margin:
+    10px 0
+    25px;
+
+  font-size:
+    25px;
+
+  letter-spacing:
+    -1px;
+}
+
+.field {
+  display:
+    grid;
+
+  gap:
+    8px;
+
+  margin-bottom:
+    18px;
+}
+
+.field label {
+  font-size:
+    11px;
+
+  font-weight:
+    900;
+}
+
+.field input {
+  width:
+    100%;
+
+  padding:
+    14px;
+
+  border:
+    1px solid
+    #dddddd;
+
+  border-radius:
+    9px;
+
+  font:
+    inherit;
+
+  font-size:
+    12px;
+
+  outline:
+    none;
+}
+
+.field input:focus {
+  border-color:
+    var(--red);
+}
+
+#checkStatusButton {
+  width:
+    100%;
+
+  padding:
+    15px;
+
+  border:
+    0;
+
+  border-radius:
+    9px;
+
+  background:
+    var(--red);
+
+  color:
+    #ffffff;
+
+  font-weight:
+    900;
+
+  cursor:
+    pointer;
+}
+
+#checkStatusButton:disabled {
+  opacity:
+    .6;
+
+  cursor:
+    wait;
+}
+
+.status-message {
+  margin-top:
+    15px;
+
+  color:
+    var(--red);
+
+  font-size:
+    11px;
+
+  line-height:
+    1.6;
+}
+
+.status-badge {
+  display:
+    inline-flex;
+
+  margin:
+    15px 0
+    5px;
+
+  padding:
+    8px
+    12px;
+
+  border-radius:
+    999px;
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
+
+  text-transform:
+    uppercase;
+}
+
+.status-badge.pending {
+  background:
+    #fff3dc;
+
+  color:
+    var(--orange);
+}
+
+.status-badge.approved {
+  background:
+    #e9f8ef;
+
+  color:
+    var(--green);
+}
+
+.status-badge.rejected {
+  background:
+    #fff0f0;
+
+  color:
+    #a51f1f;
+}
+
+.result-information {
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(
+      3,
+      1fr
+    );
+
+  gap:
+    10px;
+
+  margin-bottom:
+    20px;
+}
+
+.result-information div {
+  padding:
+    15px;
+
+  background:
+    #f7f7f7;
+
+  border-radius:
+    10px;
+}
+
+.result-information span {
+  display:
+    block;
+
+  margin-bottom:
+    7px;
+
+  color:
+    #888888;
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+
+  text-transform:
+    uppercase;
+}
+
+.result-information strong {
+  font-size:
+    11px;
+
+  line-height:
+    1.5;
+}
+
+.status-information {
+  padding:
+    20px;
+
+  border-radius:
+    12px;
+}
+
+.status-information strong {
+  display:
+    block;
+
+  margin-bottom:
+    7px;
+
+  font-size:
+    14px;
+}
+
+.status-information p {
+  margin:
+    0;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.7;
+}
+
+.status-information.pending {
+  background:
+    #fff8ea;
+
+  color:
+    #8b5a00;
+}
+
+.status-information.approved {
+  background:
+    #edf9f1;
+
+  color:
+    #155f36;
+}
+
+.status-information.rejected {
+  background:
+    #fff0f0;
+
+  color:
+    #8e2020;
+}
+
+.approved-access-content {
+  margin-top:
+    18px;
+
+  padding-top:
+    18px;
+
+  border-top:
+    1px solid
+    rgba(
+      0,
+      0,
+      0,
+      .08
+    );
+}
+
+.approved-access-content a {
+  display:
+    inline-flex;
+
+  margin-top:
+    10px;
+
+  padding:
+    11px
+    15px;
+
+  background:
+    #111111;
+
+  color:
+    #ffffff;
+
+  border-radius:
+    8px;
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+
+  text-decoration:
+    none;
+}
+
+footer {
+  padding:
+    45px
+    20px;
+
+  background:
+    #111111;
+
+  color:
+    #ffffff;
+
+  text-align:
+    center;
+}
+
+footer strong {
+  font-size:
+    20px;
+}
+
+footer p,
+footer div {
+  color:
+    #888888;
+
+  font-size:
+    11px;
+
+  line-height:
+    1.7;
+}
+
+@media (
+  max-width:
+  800px
+) {
+
+  .status-container {
+    grid-template-columns:
+      1fr;
+  }
+
+}
+
+@media (
+  max-width:
+  600px
+) {
+
+  nav {
+    display:
+      none;
+  }
+
+  main,
+  .header-inner {
+    width:
+      min(
+        100% - 28px,
+        1180px
+      );
+  }
+
+  .status-hero h1 {
+    letter-spacing:
+      -2.5px;
+  }
+
+  .result-information {
+    grid-template-columns:
+      1fr;
+  }
+
+  .status-card,
+  .status-result {
+    padding:
+      22px;
+  }
+
+}

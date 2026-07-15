@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Cek status pembayaran dan akses peluang TokoPeluang."
+  >
+
+  <title>
+    Cek Status | TokoPeluang
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="css/status.css?v=1784082165"
+  >
+</head>
+
+<body>
+
+  <header class="site-header">
+
+    <div class="header-inner">
+
+      <a
+        href="index.html"
+        class="brand"
+      >
+        Toko<span>Peluang</span>
+      </a>
+
+      <nav>
+        <a href="index.html">
+          Beranda
+        </a>
+
+        <a href="index.html#peluang">
+          Cari Peluang
+        </a>
+
+        <a
+          href="status.html"
+          class="active"
+        >
+          Cek Status
+        </a>
+      </nav>
+
+    </div>
+
+  </header>
+
+
+  <main>
+
+    <section class="status-hero">
+
+      <span class="eyebrow">
+        STATUS PERMINTAAN
+      </span>
+
+      <h1>
+        Cek Status<br>
+        Akses Peluang.
+      </h1>
+
+      <p>
+        Masukkan ID permintaan dan email yang digunakan
+        saat mengirim konfirmasi pembayaran.
+      </p>
+
+    </section>
+
+
+    <section class="status-container">
+
+      <div class="status-card">
+
+        <div class="section-label">
+          CEK PERMINTAAN
+        </div>
+
+        <h2>
+          Masukkan Data Anda
+        </h2>
+
+        <form id="statusForm">
+
+          <div class="field">
+
+            <label for="requestId">
+              ID Permintaan
+            </label>
+
+            <input
+              type="text"
+              id="requestId"
+              placeholder="Contoh: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+              required
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="requestEmail">
+              Email
+            </label>
+
+            <input
+              type="email"
+              id="requestEmail"
+              placeholder="email@contoh.com"
+              required
+            >
+
+          </div>
+
+
+          <button
+            type="submit"
+            id="checkStatusButton"
+          >
+            Cek Status
+          </button>
+
+        </form>
+
+
+        <div
+          id="statusMessage"
+          class="status-message"
+        ></div>
+
+      </div>
+
+
+      <div
+        id="statusResult"
+        class="status-result"
+        hidden
+      >
+
+        <div class="section-label">
+          HASIL PERMINTAAN
+        </div>
+
+        <div
+          id="statusBadge"
+          class="status-badge"
+        >
+        </div>
+
+        <h2 id="resultOpportunityTitle">
+        </h2>
+
+
+        <div class="result-information">
+
+          <div>
+            <span>
+              Nama
+            </span>
+
+            <strong id="resultName">
+              -
+            </strong>
+          </div>
+
+
+          <div>
+            <span>
+              Nominal
+            </span>
+
+            <strong id="resultAmount">
+              -
+            </strong>
+          </div>
+
+
+          <div>
+            <span>
+              Tanggal
+            </span>
+
+            <strong id="resultDate">
+              -
+            </strong>
+          </div>
+
+        </div>
+
+
+        <div
+          id="pendingInformation"
+          class="status-information pending"
+          hidden
+        >
+
+          <strong>
+            Menunggu Verifikasi
+          </strong>
+
+          <p>
+            Bukti pembayaran Anda telah diterima dan sedang
+            diperiksa oleh pengelola TokoPeluang.
+          </p>
+
+        </div>
+
+
+        <div
+          id="approvedInformation"
+          class="status-information approved"
+          hidden
+        >
+
+          <strong>
+            Akses Disetujui
+          </strong>
+
+          <p>
+            Pembayaran telah diverifikasi. Anda dapat
+            melanjutkan untuk mendapatkan informasi peluang.
+          </p>
+
+          <div
+            id="approvedAccessContent"
+            class="approved-access-content"
+          >
+          </div>
+
+        </div>
+
+
+        <div
+          id="rejectedInformation"
+          class="status-information rejected"
+          hidden
+        >
+
+          <strong>
+            Permintaan Belum Dapat Disetujui
+          </strong>
+
+          <p>
+            Silakan periksa kembali pembayaran atau hubungi
+            pengelola TokoPeluang untuk informasi lebih lanjut.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <strong>
+      TokoPeluang
+    </strong>
+
+    <p>
+      Platform peluang oleh Investment Technology Indonesia.
+    </p>
+
+    <div>
+      Email: alma.budsteddy88@gmail.com
+      <br>
+      SMS: 085283397198
+    </div>
+
+  </footer>
+
+
+  <script src="js/status.js?v=1784082165"></script>
+
+</body>
+
+</html>

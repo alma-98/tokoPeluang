@@ -409,9 +409,20 @@ document.addEventListener(
           };
 
 
-          await savePaymentConfirmation(
-            payload
-          );
+          const savedPayments =
+            await savePaymentConfirmation(
+              payload
+            );
+
+          const savedPayment =
+            Array.isArray(savedPayments)
+              ? savedPayments[0]
+              : savedPayments;
+
+          const requestId =
+            savedPayment && savedPayment.id
+              ? savedPayment.id
+              : "";
 
 
           form.reset();
@@ -421,10 +432,50 @@ document.addEventListener(
               "";
 
 
-          showPaymentMessage(
-            "Konfirmasi pembayaran berhasil dikirim. Status pembayaran Anda sekarang Menunggu Verifikasi oleh Founder — Investment Technology Indonesia.",
-            "success"
-          );
+          const statusUrl =
+            "status.html?id=" +
+            encodeURIComponent(requestId) +
+            "&email=" +
+            encodeURIComponent(
+              payload.customer_email
+            );
+
+          const messageBox =
+            document.getElementById(
+              "paymentMessage"
+            );
+
+          messageBox.className =
+            "payment-message show success";
+
+          messageBox.innerHTML = `
+            <strong>
+              Konfirmasi pembayaran berhasil dikirim.
+            </strong>
+            <br><br>
+            ID Permintaan:
+            <br>
+            <strong style="word-break:break-all;">
+              ${requestId}
+            </strong>
+            <br><br>
+            Simpan ID ini untuk mengecek status pembayaran.
+            <br><br>
+            <a
+              href="${statusUrl}"
+              style="
+                display:inline-block;
+                padding:10px 14px;
+                background:#111;
+                color:#fff;
+                border-radius:7px;
+                text-decoration:none;
+                font-weight:800;
+              "
+            >
+              Cek Status Permintaan
+            </a>
+          `;
 
 
           submitButton.textContent =

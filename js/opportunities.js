@@ -88,9 +88,14 @@ async function loadPublicOpportunities() {
 
       <article
         class="opportunity-card"
+        data-type="${publicEscapeHTML(
+          item.opportunity_type || ""
+        )}"
+        data-subcategory="${publicEscapeHTML(
+          item.subcategory || ""
+        )}"
         data-category="${publicEscapeHTML(
-          item.category
-            .toLowerCase()
+          item.category || ""
         )}"
       >
 

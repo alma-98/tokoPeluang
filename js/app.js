@@ -993,3 +993,183 @@ document.addEventListener(
   }
 
 })();
+
+
+/* ==========================================================
+   STRUCTURED SUPABASE OPPORTUNITY FILTER
+========================================================== */
+
+(function () {
+
+  function normalizeOpportunityValue(
+    value
+  ) {
+
+    return String(
+      value || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  }
+
+
+  function filterSupabaseOpportunities(
+    type = "",
+    subcategory = "",
+    category = ""
+  ) {
+
+    const normalizedType =
+      normalizeOpportunityValue(
+        type
+      );
+
+    const normalizedSubcategory =
+      normalizeOpportunityValue(
+        subcategory
+      );
+
+    const normalizedCategory =
+      normalizeOpportunityValue(
+        category
+      );
+
+    const cards =
+      document.querySelectorAll(
+        ".opportunity-card"
+      );
+
+    cards.forEach(card => {
+
+      const cardType =
+        normalizeOpportunityValue(
+          card.dataset.type
+        );
+
+      const cardSubcategory =
+        normalizeOpportunityValue(
+          card.dataset.subcategory
+        );
+
+      const cardCategory =
+        normalizeOpportunityValue(
+          card.dataset.category
+        );
+
+      const matchesType =
+        !normalizedType ||
+        cardType ===
+          normalizedType;
+
+      const matchesSubcategory =
+        !normalizedSubcategory ||
+        cardSubcategory ===
+          normalizedSubcategory;
+
+      const matchesCategory =
+        !normalizedCategory ||
+        cardCategory ===
+          normalizedCategory;
+
+      card.classList.toggle(
+        "hidden",
+        !(
+          matchesType &&
+          matchesSubcategory &&
+          matchesCategory
+        )
+      );
+
+    });
+
+  }
+
+
+  document.addEventListener(
+    "click",
+    function (event) {
+
+      const filterLink =
+        event.target.closest(
+          "[data-db-type], " +
+          "[data-db-subcategory], " +
+          "[data-db-category]"
+        );
+
+      if (!filterLink) {
+        return;
+      }
+
+      const type =
+        filterLink.dataset.dbType ||
+        "";
+
+      const subcategory =
+        filterLink.dataset
+          .dbSubcategory ||
+        "";
+
+      const category =
+        filterLink.dataset
+          .dbCategory ||
+        "";
+
+      filterSupabaseOpportunities(
+        type,
+        subcategory,
+        category
+      );
+
+
+      /* Tutup dropdown navbar */
+
+      document
+        .querySelectorAll(
+          ".nav-dropdown"
+        )
+        .forEach(dropdown => {
+
+          dropdown.classList.remove(
+            "open"
+          );
+
+        });
+
+
+      /* Scroll ke daftar peluang */
+
+      const opportunitySection =
+        document.getElementById(
+          "peluang"
+        );
+
+      if (opportunitySection) {
+
+        setTimeout(
+          () => {
+
+            opportunitySection
+              .scrollIntoView({
+                behavior:
+                  "smooth",
+                block:
+                  "start"
+              });
+
+          },
+          50
+        );
+
+      }
+
+    }
+  );
+
+
+  /* Expose untuk debugging */
+
+  window.filterSupabaseOpportunities =
+    filterSupabaseOpportunities;
+
+})();

@@ -481,3 +481,117 @@
   }
 
 }
+
+
+/* ==========================================================
+   QRIS DISPLAY UPDATE
+   Menggunakan file QRIS resmi tanpa memodifikasi kode QR
+========================================================== */
+
+.qris-image-wrap {
+  position: relative;
+  overflow: hidden;
+
+  width: 100%;
+  max-width: 380px;
+
+  margin:
+    20px auto
+    0;
+
+  padding: 12px;
+
+  background: #fff;
+
+  border:
+    1px solid
+    #eeeeee;
+
+  border-radius: 18px;
+}
+
+
+/*
+  File QRIS resmi tetap digunakan.
+  Tidak ada rekonstruksi atau perubahan pada kode QR.
+*/
+
+.qris-image {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  margin: 0 auto;
+
+  border-radius: 10px;
+}
+
+
+.payment-verification {
+  margin-top: 20px;
+
+  padding: 18px;
+
+  background:
+    #f7f7f7;
+
+  border-radius: 12px;
+}
+
+
+.payment-verification > span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #888;
+
+  font-size: 8px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+
+.payment-verification strong {
+  display: block;
+
+  color: #111;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+
+.payment-verification p {
+  margin:
+    7px 0
+    0;
+
+  color: #777;
+
+  font-size: 10px;
+
+  line-height: 1.6;
+}
+
+
+/* Hapus blok identitas merchant tambahan di UI */
+
+.merchant-information {
+  display: none !important;
+}
+
+
+@media (
+  max-width: 560px
+) {
+
+  .qris-image-wrap {
+    max-width: 100%;
+  }
+
+}

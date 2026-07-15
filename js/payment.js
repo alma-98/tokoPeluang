@@ -422,7 +422,7 @@ document.addEventListener(
 
 
           showPaymentMessage(
-            "Konfirmasi pembayaran berhasil dikirim. Status pembayaran Anda sekarang Menunggu Verifikasi oleh Alma — Founder, Investment Technology Indonesia.",
+            "Konfirmasi pembayaran berhasil dikirim. Status pembayaran Anda sekarang Menunggu Verifikasi oleh Founder — Investment Technology Indonesia.",
             "success"
           );
 
